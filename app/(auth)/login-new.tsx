@@ -45,7 +45,7 @@ export default function LoginNew() {
       const { accessToken } = response.data;
 
       signIn(accessToken);
-      router.replace('/(tabs)/dashboard');
+      router.replace('/(tabs)/map');
     } catch (error: any) {
       console.error('Login error:', error);
       showAlert(

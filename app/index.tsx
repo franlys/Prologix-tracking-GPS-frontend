@@ -11,7 +11,7 @@ export default function Index() {
 
   // Redirect to tabs if we have a session, otherwise to login
   if (session) {
-    return <Redirect href="/(tabs)/map" />;
+    return <Redirect href="/(tabs)/dashboard" />;
   }
 
   return <Redirect href="/(auth)/login" />;
