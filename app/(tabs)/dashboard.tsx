@@ -27,6 +27,7 @@ export default function DashboardScreen() {
     alerts: 0,
   });
   const [subscription, setSubscription] = useState<any>(null);
+  const [userRole, setUserRole] = useState<string>('user');
 
   useEffect(() => {
     fetchData();
@@ -34,6 +35,14 @@ export default function DashboardScreen() {
 
   const fetchData = async () => {
     try {
+      // Fetch user info to check role
+      try {
+        const userResponse = await api.get('/auth/me');
+        setUserRole(userResponse.data.role);
+      } catch (error) {
+        console.log('Could not fetch user info');
+      }
+
       // Fetch devices
       const devicesResponse = await api.get('/devices');
       const devices = devicesResponse.data;
@@ -154,6 +163,32 @@ export default function DashboardScreen() {
 
         {/* Quick Actions */}
         <QuickActions />
+
+        {/* Admin Panel Button (only for admins) */}
+        {userRole === 'admin' && (
+          <TouchableOpacity
+            onPress={() => router.push('/(admin)/users' as any)}
+            activeOpacity={0.7}
+          >
+            <LinearGradient
+              colors={['#f59e0b', '#ef4444']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.adminButton}
+            >
+              <View style={styles.adminButtonContent}>
+                <Text style={styles.adminButtonIcon}>👔</Text>
+                <View style={styles.adminButtonText}>
+                  <Text style={styles.adminButtonTitle}>Panel de Administración</Text>
+                  <Text style={styles.adminButtonSubtitle}>
+                    Vincular GPS a clientes
+                  </Text>
+                </View>
+                <Text style={styles.adminButtonArrow}>→</Text>
+              </View>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
 
         {/* Subscription Info */}
         {subscription && (
@@ -436,5 +471,37 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.base,
     color: 'rgba(255, 255, 255, 0.95)',
     fontWeight: Typography.fontWeight.medium,
+  },
+  adminButton: {
+    borderRadius: BorderRadius.lg,
+    padding: Spacing.base,
+    marginBottom: Spacing.lg,
+    ...Shadows.md,
+  },
+  adminButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  adminButtonIcon: {
+    fontSize: 32,
+    marginRight: Spacing.md,
+  },
+  adminButtonText: {
+    flex: 1,
+  },
+  adminButtonTitle: {
+    fontSize: Typography.fontSize.lg,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#ffffff',
+    marginBottom: Spacing.xs / 2,
+  },
+  adminButtonSubtitle: {
+    fontSize: Typography.fontSize.sm,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  adminButtonArrow: {
+    fontSize: 24,
+    color: '#ffffff',
+    fontWeight: Typography.fontWeight.bold,
   },
 });
