@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-  Alert,
   KeyboardAvoidingView,
   ScrollView,
 } from 'react-native';
@@ -24,18 +23,13 @@ export default function LoginNew() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const showAlert = (title: string, message: string) => {
-    if (Platform.OS === 'web') {
-      alert(`${title}: ${message}`);
-    } else {
-      Alert.alert(title, message);
-    }
-  };
+  const [error, setError] = useState('');
 
   const handleLogin = async () => {
+    setError('');
+
     if (!email || !password) {
-      showAlert('Error', 'Por favor completa todos los campos');
+      setError('Por favor completa todos los campos');
       return;
     }
 
@@ -48,9 +42,8 @@ export default function LoginNew() {
       router.replace('/(tabs)/dashboard');
     } catch (error: any) {
       console.error('Login error:', error);
-      showAlert(
-        'Error de Inicio de Sesión',
-        error.response?.data?.message || 'Credenciales inválidas'
+      setError(
+        error.response?.data?.message || 'Email o contraseña incorrectos. Por favor intenta de nuevo.'
       );
     } finally {
       setLoading(false);
@@ -82,6 +75,14 @@ export default function LoginNew() {
           {/* Login Card */}
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Iniciar Sesión</Text>
+
+            {/* Error Message */}
+            {error ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorIcon}>⚠️</Text>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            ) : null}
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Email</Text>
@@ -225,6 +226,26 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
     marginBottom: Spacing.lg,
     textAlign: 'center',
+  },
+  errorContainer: {
+    backgroundColor: '#fee2e2',
+    borderLeftWidth: 4,
+    borderLeftColor: '#ef4444',
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    marginBottom: Spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  errorIcon: {
+    fontSize: 20,
+    marginRight: Spacing.sm,
+  },
+  errorText: {
+    flex: 1,
+    fontSize: Typography.fontSize.sm,
+    color: '#991b1b',
+    fontWeight: Typography.fontWeight.medium,
   },
   inputGroup: {
     marginBottom: Spacing.base,

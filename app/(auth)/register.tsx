@@ -7,7 +7,6 @@ import {
   StyleSheet,
   ScrollView,
   Platform,
-  Alert,
   KeyboardAvoidingView,
 } from 'react-native';
 import { router } from 'expo-router';
@@ -27,59 +26,54 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-
-  const showAlert = (title: string, message: string) => {
-    if (Platform.OS === 'web') {
-      alert(`${title}: ${message}`);
-    } else {
-      Alert.alert(title, message);
-    }
-  };
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleRegister = async () => {
+    setError('');
+    setSuccess('');
+
     // Validation
     if (!formData.name || !formData.email || !formData.password) {
-      showAlert('Error', 'Por favor completa todos los campos requeridos');
+      setError('Por favor completa todos los campos requeridos');
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      showAlert('Error', 'Las contraseñas no coinciden');
+      setError('Las contraseñas no coinciden');
       return;
     }
 
     if (formData.password.length < 6) {
-      showAlert('Error', 'La contraseña debe tener al menos 6 caracteres');
+      setError('La contraseña debe tener al menos 6 caracteres');
       return;
     }
 
     setLoading(true);
     try {
-      const response = await api.post('/auth/register', {
+      await api.post('/auth/register', {
         name: formData.name,
         email: formData.email,
         password: formData.password,
         phoneNumber: formData.phoneNumber || undefined,
       });
 
-      showAlert(
-        '¡Registro Exitoso!',
-        'Tu cuenta ha sido creada. Iniciando con plan FREE de prueba...'
-      );
+      setSuccess('¡Cuenta creada exitosamente! Iniciando sesión...');
 
       // Auto login after successful registration
-      const loginResponse = await api.post('/auth/login', {
+      await api.post('/auth/login', {
         email: formData.email,
         password: formData.password,
       });
 
-      // Here you would save the token and navigate
-      router.replace('/(tabs)/dashboard');
+      // Navigate to onboarding
+      setTimeout(() => {
+        router.replace('/(onboarding)/welcome');
+      }, 1500);
     } catch (error: any) {
       console.error('Registration error:', error);
-      showAlert(
-        'Error de Registro',
-        error.response?.data?.message || 'No se pudo crear la cuenta'
+      setError(
+        error.response?.data?.message || 'No se pudo crear la cuenta. Por favor intenta de nuevo.'
       );
     } finally {
       setLoading(false);
@@ -110,6 +104,22 @@ export default function Register() {
 
           {/* Form Card */}
           <View style={styles.card}>
+            {/* Error Message */}
+            {error ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorIcon}>⚠️</Text>
+                <Text style={styles.errorText}>{error}</Text>
+              </View>
+            ) : null}
+
+            {/* Success Message */}
+            {success ? (
+              <View style={styles.successContainer}>
+                <Text style={styles.successIcon}>✅</Text>
+                <Text style={styles.successText}>{success}</Text>
+              </View>
+            ) : null}
+
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Nombre Completo *</Text>
               <TextInput
@@ -240,6 +250,46 @@ const styles = StyleSheet.create({
     maxWidth: 500,
     width: '100%',
     alignSelf: 'center',
+  },
+  errorContainer: {
+    backgroundColor: '#fee2e2',
+    borderLeftWidth: 4,
+    borderLeftColor: '#ef4444',
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    marginBottom: Spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  errorIcon: {
+    fontSize: 20,
+    marginRight: Spacing.sm,
+  },
+  errorText: {
+    flex: 1,
+    fontSize: Typography.fontSize.sm,
+    color: '#991b1b',
+    fontWeight: Typography.fontWeight.medium,
+  },
+  successContainer: {
+    backgroundColor: '#d1fae5',
+    borderLeftWidth: 4,
+    borderLeftColor: '#10b981',
+    borderRadius: BorderRadius.md,
+    padding: Spacing.md,
+    marginBottom: Spacing.base,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  successIcon: {
+    fontSize: 20,
+    marginRight: Spacing.sm,
+  },
+  successText: {
+    flex: 1,
+    fontSize: Typography.fontSize.sm,
+    color: '#065f46',
+    fontWeight: Typography.fontWeight.medium,
   },
   inputGroup: {
     marginBottom: Spacing.base,
