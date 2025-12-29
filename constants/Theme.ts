@@ -1,51 +1,66 @@
 /**
  * Theme Configuration for Prologix GPS Tracking
- * Inspired by modern GPS tracking apps with clean, professional design
+ * Professional color palette optimized for trust and technology
+ * Inspired by the prompt: "Confianza & Tecnología"
  */
 
 export const Colors = {
-  // Primary Brand Colors
+  // Primary Brand Colors - Deep Blue (Trust & Professionalism)
   primary: {
-    50: '#eff6ff',
-    100: '#dbeafe',
-    200: '#bfdbfe',
-    300: '#93c5fd',
-    400: '#60a5fa',
-    500: '#3b82f6',  // Main brand color
-    600: '#2563eb',
-    700: '#1d4ed8',
-    800: '#1e40af',
-    900: '#1e3a8a',
+    50: '#e8f1f5',
+    100: '#c5dce6',
+    200: '#9fc5d6',
+    300: '#78aec6',
+    400: '#5b9cba',
+    500: '#0B3C5D',  // Brand Deep Blue - Main color
+    600: '#093650',
+    700: '#072d43',
+    800: '#052336',
+    900: '#031a29',
   },
 
-  // Accent Colors (Violet/Purple for premium features)
-  accent: {
-    50: '#faf5ff',
-    100: '#f3e8ff',
-    200: '#e9d5ff',
-    300: '#d8b4fe',
-    400: '#c084fc',
-    500: '#a855f7',
-    600: '#9333ea',
-    700: '#7e22ce',
-    800: '#6b21a8',
-    900: '#581c87',
+  // Secondary Colors - Light Blue (Interactive elements)
+  secondary: {
+    50: '#e3f2fd',
+    100: '#bbdefb',
+    200: '#90caf9',
+    300: '#64b5f6',
+    400: '#42a5f5',
+    500: '#1F7AE0',  // Brand Light Blue
+    600: '#1976d2',
+    700: '#1565c0',
+    800: '#0d47a1',
+    900: '#0a3d91',
   },
 
-  // Status Colors
-  success: '#10b981',   // Green - Online, Active
+  // Status Colors (Professional green for success)
+  success: {
+    50: '#e8f5e9',
+    100: '#c8e6c9',
+    200: '#a5d6a7',
+    300: '#81c784',
+    400: '#66bb6a',
+    500: '#2ECC71',  // Success Green
+    600: '#43a047',
+    700: '#388e3c',
+    800: '#2e7d32',
+    900: '#1b5e20',
+  },
+
+  successDark: '#1E8449', // Darker green for emphasis
+
   warning: '#f59e0b',   // Amber - Warning, Trial
   error: '#ef4444',     // Red - Offline, Error
-  info: '#06b6d4',      // Cyan - Info
+  info: '#1F7AE0',      // Light Blue - Info
 
-  // Neutral Colors (Light Mode)
+  // Neutral Colors (Light Mode) - Professional grays
   light: {
-    background: '#f8fafc',    // Slate 50
+    background: '#F4F6F8',    // Light Gray - Clean background
     surface: '#ffffff',
     surfaceElevated: '#ffffff',
-    text: '#1e293b',          // Slate 800
-    textSecondary: '#64748b', // Slate 500
-    textTertiary: '#94a3b8',  // Slate 400
+    text: '#2E2E2E',          // Dark Gray - High contrast
+    textSecondary: '#6C757D', // Medium Gray - Secondary text
+    textTertiary: '#94a3b8',  // Light Gray - Tertiary text
     border: '#e2e8f0',        // Slate 200
     borderLight: '#f1f5f9',   // Slate 100
     overlay: 'rgba(0, 0, 0, 0.5)',
@@ -64,33 +79,33 @@ export const Colors = {
     overlay: 'rgba(0, 0, 0, 0.7)',
   },
 
-  // Plan Colors
+  // Plan Colors (Professional branding)
   plans: {
     free: {
-      gradient: ['#94a3b8', '#64748b'],
-      color: '#64748b',
+      gradient: ['#6C757D', '#94a3b8'], // Gray
+      color: '#6C757D',
     },
     basico: {
-      gradient: ['#3b82f6', '#2563eb'],
-      color: '#3b82f6',
+      gradient: ['#1F7AE0', '#0B3C5D'], // Blue gradient
+      color: '#1F7AE0',
     },
     profesional: {
-      gradient: ['#8b5cf6', '#7c3aed'],
-      color: '#8b5cf6',
+      gradient: ['#2ECC71', '#1E8449'], // Green gradient (most popular)
+      color: '#2ECC71',
     },
     empresarial: {
-      gradient: ['#f59e0b', '#ea580c'],
-      color: '#f59e0b',
+      gradient: ['#0B3C5D', '#052336'], // Deep blue gradient (premium)
+      color: '#0B3C5D',
     },
   },
 };
 
 export const Gradients = {
-  primary: ['#3b82f6', '#8b5cf6'],
-  success: ['#10b981', '#06b6d4'],
-  premium: ['#f59e0b', '#ef4444'],
-  dark: ['#1e293b', '#0f172a'],
-  light: ['#ffffff', '#f8fafc'],
+  primary: ['#0B3C5D', '#1F7AE0'], // Deep Blue to Light Blue
+  success: ['#2ECC71', '#1E8449'], // Success Green gradient
+  premium: ['#0B3C5D', '#052336'], // Deep Blue premium
+  dark: ['#2E2E2E', '#0f172a'],
+  light: ['#ffffff', '#F4F6F8'],
 
   // Plan gradients
   free: Colors.plans.free.gradient,
