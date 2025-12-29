@@ -28,6 +28,7 @@ export default function DashboardScreen() {
   });
   const [subscription, setSubscription] = useState<any>(null);
   const [userRole, setUserRole] = useState<string>('user');
+  const [userName, setUserName] = useState<string>('');
 
   useEffect(() => {
     fetchData();
@@ -39,6 +40,7 @@ export default function DashboardScreen() {
       try {
         const userResponse = await api.get('/auth/me');
         setUserRole(userResponse.data.role);
+        setUserName(userResponse.data.name);
       } catch (error) {
         console.log('Could not fetch user info');
       }
@@ -110,12 +112,12 @@ export default function DashboardScreen() {
     >
       {/* Header */}
       <LinearGradient
-        colors={['#3b82f6', '#8b5cf6']}
+        colors={['#1e40af', '#3b82f6']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
       >
-        <Text style={styles.greeting}>¡Bienvenido!</Text>
+        <Text style={styles.greeting}>¡Bienvenido{userName ? `, ${userName}` : ''}!</Text>
         <Text style={styles.headerTitle}>Dashboard GPS</Text>
         {subscription && (
           <View style={styles.planBadgeContainer}>
@@ -169,15 +171,13 @@ export default function DashboardScreen() {
           <TouchableOpacity
             onPress={() => router.push('/(admin)/users' as any)}
             activeOpacity={0.7}
+            style={styles.adminButtonWrapper}
           >
-            <LinearGradient
-              colors={['#f59e0b', '#ef4444']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.adminButton}
-            >
+            <Card variant="elevated" style={styles.adminCard}>
               <View style={styles.adminButtonContent}>
-                <Text style={styles.adminButtonIcon}>👔</Text>
+                <View style={styles.adminIconContainer}>
+                  <Text style={styles.adminButtonIcon}>👔</Text>
+                </View>
                 <View style={styles.adminButtonText}>
                   <Text style={styles.adminButtonTitle}>Panel de Administración</Text>
                   <Text style={styles.adminButtonSubtitle}>
@@ -186,7 +186,7 @@ export default function DashboardScreen() {
                 </View>
                 <Text style={styles.adminButtonArrow}>→</Text>
               </View>
-            </LinearGradient>
+            </Card>
           </TouchableOpacity>
         )}
 
@@ -472,36 +472,46 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.95)',
     fontWeight: Typography.fontWeight.medium,
   },
-  adminButton: {
-    borderRadius: BorderRadius.lg,
-    padding: Spacing.base,
+  adminButtonWrapper: {
     marginBottom: Spacing.lg,
-    ...Shadows.md,
+  },
+  adminCard: {
+    backgroundColor: '#eff6ff',
+    borderLeftWidth: 4,
+    borderLeftColor: '#3b82f6',
   },
   adminButtonContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  adminButtonIcon: {
-    fontSize: 32,
+  adminIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.md,
+    backgroundColor: '#dbeafe',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginRight: Spacing.md,
+  },
+  adminButtonIcon: {
+    fontSize: 24,
   },
   adminButtonText: {
     flex: 1,
   },
   adminButtonTitle: {
-    fontSize: Typography.fontSize.lg,
+    fontSize: Typography.fontSize.base,
     fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
+    color: Colors.light.text,
     marginBottom: Spacing.xs / 2,
   },
   adminButtonSubtitle: {
     fontSize: Typography.fontSize.sm,
-    color: 'rgba(255, 255, 255, 0.9)',
+    color: Colors.light.textSecondary,
   },
   adminButtonArrow: {
-    fontSize: 24,
-    color: '#ffffff',
+    fontSize: 20,
+    color: Colors.primary[500],
     fontWeight: Typography.fontWeight.bold,
   },
 });
