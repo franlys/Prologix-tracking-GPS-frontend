@@ -36,10 +36,19 @@ export default function LoginNew() {
     setLoading(true);
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { accessToken } = response.data;
+      const { accessToken, user } = response.data;
 
-      signIn(accessToken);
-      router.replace('/(tabs)/dashboard');
+      // Save token and user info (including role)
+      signIn(accessToken, user);
+
+      // Redirect based on role
+      if (user.role === 'ADMIN') {
+        router.replace('/(admin)/installers');
+      } else if (user.role === 'INSTALLER') {
+        router.replace('/(installer)/dashboard');
+      } else {
+        router.replace('/(tabs)/dashboard');
+      }
     } catch (error: any) {
       console.error('Login error:', error);
       setError(
