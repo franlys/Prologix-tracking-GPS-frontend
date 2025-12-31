@@ -89,6 +89,17 @@ export default function AdminInstallersScreen() {
           </Card>
         </View>
 
+        {/* Create Installer Button */}
+        <Button
+          title="+ Crear Nuevo Instalador"
+          onPress={() => router.push('/(admin)/create-installer')}
+          variant="gradient"
+          gradient={['#7c3aed', '#a78bfa']}
+          size="md"
+          fullWidth
+          style={styles.createButton}
+        />
+
         {/* Installers List */}
         <FlatList
           data={installers}
@@ -193,6 +204,9 @@ const styles = StyleSheet.create({
   statCard: {
     padding: Spacing.lg,
     alignItems: 'center',
+  },
+  createButton: {
+    marginBottom: Spacing.base,
   },
   statValue: {
     fontSize: Typography.fontSize.xxxl,
