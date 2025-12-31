@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
         ...Shadows.sm,
     },
     statCardActive: {
-        borderColor: Colors.primary[500],
+        borderColor: Colors.primary['500'],
     },
     statusDot: {
         width: 8,

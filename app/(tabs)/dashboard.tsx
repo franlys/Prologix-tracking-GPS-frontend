@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   upgradeLink: {
     fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.semibold,
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
   },
   planInfo: {
     flexDirection: 'row',
@@ -511,7 +511,7 @@ const styles = StyleSheet.create({
   },
   adminButtonArrow: {
     fontSize: 20,
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
     fontWeight: Typography.fontWeight.bold,
   },
 });

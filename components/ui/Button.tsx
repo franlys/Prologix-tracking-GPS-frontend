@@ -58,7 +58,7 @@ export const Button: React.FC<ButtonProps> = ({
   const content = (
     <>
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' ? Colors.primary[500] : '#fff'} />
+        <ActivityIndicator color={variant === 'outline' ? Colors.primary['500'] : '#fff'} />
       ) : (
         <View style={styles.content}>
           {icon && <View style={styles.iconContainer}>{icon}</View>}
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
 
   // Variants
   primary: {
-    backgroundColor: Colors.primary[500],
+    backgroundColor: Colors.primary['500'],
     ...Shadows.md,
   },
   secondary: {
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   outline: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: Colors.primary[500],
+    borderColor: Colors.primary['500'],
   },
   ghost: {
     backgroundColor: 'transparent',
@@ -184,10 +184,10 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
   },
   outlineText: {
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
   },
   ghostText: {
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
   },
   gradientText: {
     color: '#ffffff',

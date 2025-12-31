@@ -302,14 +302,14 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.xs,
   },
   roleBadge: {
-    backgroundColor: Colors.primary[50],
+    backgroundColor: Colors.primary['50'],
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.sm,
   },
   roleText: {
     fontSize: Typography.fontSize.sm,
-    color: Colors.primary[700],
+    color: Colors.primary['700'],
     fontWeight: Typography.fontWeight.semibold,
   },
   subscriptionHeader: {
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   upgradeLink: {
     fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.semibold,
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
   },
   planCard: {
     padding: Spacing.lg,

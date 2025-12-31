@@ -263,7 +263,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     fontSize: Typography.fontSize.sm,
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
     fontWeight: Typography.fontWeight.medium,
   },
   loginButton: {

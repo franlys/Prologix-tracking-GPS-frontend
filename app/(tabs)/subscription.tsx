@@ -375,7 +375,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: Typography.fontSize.xxl,
     fontWeight: Typography.fontWeight.bold,
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
     marginBottom: Spacing.xs / 2,
   },
   statLabel: {
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.sm,
   },
   toggleButtonActive: {
-    backgroundColor: Colors.primary[500],
+    backgroundColor: Colors.primary['500'],
   },
   toggleText: {
     fontSize: Typography.fontSize.sm,

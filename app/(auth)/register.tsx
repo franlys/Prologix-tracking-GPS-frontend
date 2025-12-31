@@ -344,6 +344,6 @@ const styles = StyleSheet.create({
   link: {
     fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.semibold,
-    color: Colors.primary[500],
+    color: Colors.primary['500'],
   },
 });

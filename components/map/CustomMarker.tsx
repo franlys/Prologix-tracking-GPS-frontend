@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   speedBadge: {
-    backgroundColor: Colors.primary[500],
+    backgroundColor: Colors.primary['500'],
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: BorderRadius.full,

@@ -19,7 +19,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   max,
   label,
   showValues = true,
-  color = Colors.primary[500],
+  color = Colors.primary['500'],
   gradient,
   height = 8,
   style,

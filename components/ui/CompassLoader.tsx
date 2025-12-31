@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   glow: {
     position: 'absolute',
     borderRadius: 9999,
-    backgroundColor: Colors.primary[100],
+    backgroundColor: Colors.primary['100'],
     opacity: 0.3,
   },
   compass: {
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
-    shadowColor: Colors.primary[500],
+    shadowColor: Colors.primary['500'],
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     borderRadius: 9999,
     borderWidth: 2,
-    borderColor: Colors.primary[300],
+    borderColor: Colors.primary['300'],
     opacity: 0.5,
   },
   needle: {
