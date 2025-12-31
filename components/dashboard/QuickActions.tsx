@@ -13,7 +13,7 @@ interface QuickAction {
 
 const defaultActions: QuickAction[] = [
   { id: '1', title: 'Mapa', icon: '🗺️', route: '/(tabs)/map', color: Colors.primary['500'] },
-  { id: '2', title: 'Dispositivos', icon: '📱', route: '/(tabs)/devices', color: Colors.accent['500'] },
+  { id: '2', title: 'Dispositivos', icon: '📱', route: '/(tabs)/devices', color: Colors.secondary['500'] },
   { id: '3', title: 'Planes', icon: '💎', route: '/(tabs)/subscription', color: '#f59e0b' },
   { id: '4', title: 'Alertas', icon: '🔔', route: '/(tabs)/map', color: Colors.error },
 ];
