@@ -30,6 +30,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
     const [[isLoading, session], setSession] = useStorageState('token');
     const [[userLoading, userData], setUserData] = useStorageState('user');
     const [user, setUser] = React.useState<any | null>(null);
+    const [validated, setValidated] = React.useState(false);
 
     React.useEffect(() => {
         if (userData) {
@@ -43,6 +44,36 @@ export function SessionProvider(props: React.PropsWithChildren) {
             setUser(null);
         }
     }, [userData]);
+
+    // Validate user data on mount
+    React.useEffect(() => {
+        const validateUser = async () => {
+            if (session && !validated) {
+                try {
+                    // Import api service dynamically to avoid circular dependency
+                    const { default: api } = await import('../services/api');
+                    const response = await api.get('/auth/me');
+                    const freshUserData = response.data;
+
+                    // Update if user data changed (e.g., role changed)
+                    if (userData) {
+                        const currentUser = JSON.parse(userData);
+                        if (currentUser.role !== freshUserData.role) {
+                            console.log('User role changed, updating...', currentUser.role, '→', freshUserData.role);
+                            setUserData(JSON.stringify(freshUserData));
+                            setUser(freshUserData);
+                        }
+                    }
+                    setValidated(true);
+                } catch (error) {
+                    console.error('Failed to validate user', error);
+                    setValidated(true);
+                }
+            }
+        };
+
+        validateUser();
+    }, [session, validated, userData, setUserData]);
 
     return (
         <AuthContext.Provider
