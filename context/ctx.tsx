@@ -55,25 +55,24 @@ export function SessionProvider(props: React.PropsWithChildren) {
                     const response = await api.get('/auth/me');
                     const freshUserData = response.data;
 
-                    // Update if user data changed (e.g., role changed)
-                    if (userData) {
-                        const currentUser = JSON.parse(userData);
-                        if (currentUser.role !== freshUserData.role) {
-                            console.log('User role changed, updating...', currentUser.role, '→', freshUserData.role);
-                            setUserData(JSON.stringify(freshUserData));
-                            setUser(freshUserData);
-                        }
-                    }
+                    // ALWAYS update user data from server to ensure consistency
+                    console.log('Validating user from server:', freshUserData);
+                    setUserData(JSON.stringify(freshUserData));
+                    setUser(freshUserData);
                     setValidated(true);
                 } catch (error) {
                     console.error('Failed to validate user', error);
+                    // If validation fails, clear session
+                    setSession(null);
+                    setUserData(null);
+                    setUser(null);
                     setValidated(true);
                 }
             }
         };
 
         validateUser();
-    }, [session, validated, userData, setUserData]);
+    }, [session, validated, setUserData, setSession]);
 
     return (
         <AuthContext.Provider

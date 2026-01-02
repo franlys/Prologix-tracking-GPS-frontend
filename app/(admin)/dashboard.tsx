@@ -309,6 +309,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: Spacing.base,
     gap: Spacing.md,
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    alignSelf: 'center',
+    width: '100%',
   },
   statCard: {
     flex: 1,
@@ -340,6 +343,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.base,
     paddingTop: Spacing.lg,
     paddingBottom: Spacing.md,
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    alignSelf: 'center',
+    width: '100%',
   },
   sectionTitle: {
     fontSize: Typography.fontSize.base,
@@ -350,6 +356,9 @@ const styles = StyleSheet.create({
   actionsGrid: {
     paddingHorizontal: Spacing.base,
     gap: Spacing.md,
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    alignSelf: 'center',
+    width: '100%',
   },
   actionCardWrapper: {
     marginBottom: Spacing.md,
@@ -388,6 +397,9 @@ const styles = StyleSheet.create({
     marginHorizontal: Spacing.base,
     padding: Spacing.base,
     marginBottom: Spacing.lg,
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    alignSelf: 'center',
+    width: Platform.OS === 'web' ? 'calc(100% - 32px)' : undefined,
   },
   infoRow: {
     flexDirection: 'row',
@@ -426,6 +438,9 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
     backgroundColor: '#f0fdf4',
     borderColor: '#10b981',
+    maxWidth: Platform.OS === 'web' ? 1200 : undefined,
+    alignSelf: 'center',
+    width: Platform.OS === 'web' ? 'calc(100% - 32px)' : undefined,
   },
   helpStep: {
     flexDirection: 'row',
