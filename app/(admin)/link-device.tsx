@@ -9,8 +9,8 @@ import {
   Alert,
   TextInput,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
@@ -114,17 +114,18 @@ export default function LinkDeviceScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#10b981', '#059669']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Vincular Dispositivo</Text>
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1f2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Vincular Dispositivo GPS</Text>
+          <View style={styles.headerSpacer} />
+        </View>
         <Text style={styles.headerSubtitle}>
-          Asignar GPS a cliente
+          Asignar dispositivo a un cliente
         </Text>
-      </LinearGradient>
+      </View>
 
       <ScrollView style={styles.content}>
         {/* Selección de Usuario */}
@@ -281,22 +282,39 @@ export default function LinkDeviceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f9fafb',
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.lg,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'web' ? Spacing.base : Spacing.xxxl,
+    paddingBottom: Spacing.base,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.base,
+    marginBottom: Spacing.sm,
+  },
+  backButton: {
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#f3f4f6',
   },
   headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
+    fontSize: Typography.fontSize.lg,
     fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
-    marginBottom: Spacing.xs,
+    color: '#1f2937',
+  },
+  headerSpacer: {
+    width: 40,
   },
   headerSubtitle: {
-    fontSize: Typography.fontSize.base,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+    paddingHorizontal: Spacing.base,
   },
   content: {
     flex: 1,

@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -22,6 +23,7 @@ interface GPSModel {
   protocol: string;
   port: number;
   description: string;
+  icon: keyof typeof Ionicons.glyphMap;
 }
 
 const GPS_MODELS: GPSModel[] = [
@@ -30,7 +32,8 @@ const GPS_MODELS: GPSModel[] = [
     name: 'Concox GT06N',
     protocol: 'GT06',
     port: 5023,
-    description: 'Más popular en RD - SMS + GPRS',
+    description: 'Popular en RD - SMS + GPRS',
+    icon: 'hardware-chip',
   },
   {
     id: 'tk103',
@@ -38,6 +41,7 @@ const GPS_MODELS: GPSModel[] = [
     protocol: 'TK103',
     port: 5013,
     description: 'Económico - Relay corta corriente',
+    icon: 'car-sport',
   },
   {
     id: 'fmb120',
@@ -45,6 +49,7 @@ const GPS_MODELS: GPSModel[] = [
     protocol: 'Teltonika',
     port: 5027,
     description: 'Profesional - CAN bus',
+    icon: 'business',
   },
   {
     id: 'h02',
@@ -52,6 +57,7 @@ const GPS_MODELS: GPSModel[] = [
     protocol: 'H02',
     port: 5013,
     description: 'Básico - Compatible',
+    icon: 'location',
   },
 ];
 
@@ -83,6 +89,14 @@ export default function DeviceSetupScreen() {
     }
   };
 
+  const handleBack = () => {
+    if (step === 1) {
+      router.back();
+    } else {
+      setStep(step - 1);
+    }
+  };
+
   const handleStep1Next = () => {
     if (!deviceName.trim()) {
       showAlert('Error', 'Ingresa el nombre del vehículo');
@@ -97,7 +111,6 @@ export default function DeviceSetupScreen() {
       return;
     }
 
-    // Generate SMS commands
     const commands = generateSMSCommands();
     setSmsCommands(commands);
     setStep(2);
@@ -138,7 +151,6 @@ export default function DeviceSetupScreen() {
       navigator.clipboard.writeText(text);
       showAlert('Copiado', 'Comando copiado al portapapeles');
     } else {
-      // For mobile, use expo-clipboard or similar
       showAlert('Copiar', `Copia este comando:\n\n${text}`);
     }
   };
@@ -148,17 +160,13 @@ export default function DeviceSetupScreen() {
     setConnectionStatus('checking');
 
     try {
-      // Simulate API call to check device connection
-      // In production, this would call /devices/verify or similar
       await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // For demo purposes, randomly succeed/fail
       const connected = Math.random() > 0.3;
 
       if (connected) {
         setConnectionStatus('connected');
         showAlert(
-          '¡Conectado!',
+          'Conectado',
           `El GPS "${deviceName}" está enviando datos correctamente.`
         );
       } else {
@@ -178,7 +186,7 @@ export default function DeviceSetupScreen() {
 
   const handleFinish = () => {
     showAlert(
-      '¡Configuración Completa!',
+      'Configuración Completa',
       `GPS "${deviceName}" configurado exitosamente.\n\nAhora puedes vincularlo a un usuario desde el panel "Vincular Dispositivo".`
     );
     router.back();
@@ -186,79 +194,99 @@ export default function DeviceSetupScreen() {
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#10b981', '#059669']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Configurar GPS</Text>
-        <Text style={styles.headerSubtitle}>Wizard de configuración paso a paso</Text>
+      {/* Professional Header */}
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1f2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Configurar Dispositivo GPS</Text>
+          <View style={styles.headerSpacer} />
+        </View>
 
-        {/* Progress Indicator */}
-        <View style={styles.progressContainer}>
-          {[1, 2, 3].map((s) => (
-            <View key={s} style={styles.progressStep}>
-              <View
-                style={[
-                  styles.progressCircle,
-                  step >= s && styles.progressCircleActive,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.progressNumber,
-                    step >= s && styles.progressNumberActive,
-                  ]}
-                >
-                  {s}
-                </Text>
-              </View>
-              {s < 3 && (
-                <View
-                  style={[
-                    styles.progressLine,
-                    step > s && styles.progressLineActive,
-                  ]}
-                />
+        {/* Step Indicator */}
+        <View style={styles.stepsContainer}>
+          <View style={styles.stepItem}>
+            <View style={[styles.stepCircle, step >= 1 && styles.stepCircleActive]}>
+              {step > 1 ? (
+                <Ionicons name="checkmark" size={16} color="#ffffff" />
+              ) : (
+                <Text style={[styles.stepNumber, step === 1 && styles.stepNumberActive]}>1</Text>
               )}
             </View>
-          ))}
-        </View>
+            <Text style={[styles.stepLabel, step === 1 && styles.stepLabelActive]}>
+              Información
+            </Text>
+          </View>
 
-        <View style={styles.progressLabels}>
-          <Text style={styles.progressLabel}>Info</Text>
-          <Text style={styles.progressLabel}>SMS</Text>
-          <Text style={styles.progressLabel}>Verificar</Text>
-        </View>
-      </LinearGradient>
+          <View style={[styles.stepLine, step > 1 && styles.stepLineActive]} />
 
-      <ScrollView style={styles.content}>
+          <View style={styles.stepItem}>
+            <View style={[styles.stepCircle, step >= 2 && styles.stepCircleActive]}>
+              {step > 2 ? (
+                <Ionicons name="checkmark" size={16} color="#ffffff" />
+              ) : (
+                <Text style={[styles.stepNumber, step === 2 && styles.stepNumberActive]}>2</Text>
+              )}
+            </View>
+            <Text style={[styles.stepLabel, step === 2 && styles.stepLabelActive]}>
+              Comandos SMS
+            </Text>
+          </View>
+
+          <View style={[styles.stepLine, step > 2 && styles.stepLineActive]} />
+
+          <View style={styles.stepItem}>
+            <View style={[styles.stepCircle, step >= 3 && styles.stepCircleActive]}>
+              <Text style={[styles.stepNumber, step === 3 && styles.stepNumberActive]}>3</Text>
+            </View>
+            <Text style={[styles.stepLabel, step === 3 && styles.stepLabelActive]}>
+              Verificar
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Step 1: Device Information */}
         {step === 1 && (
-          <Card variant="elevated" style={styles.card}>
-            <Text style={styles.stepTitle}>📱 Paso 1: Información del Dispositivo</Text>
+          <View style={styles.stepContent}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="information-circle-outline" size={24} color="#3b82f6" />
+              <Text style={styles.sectionTitle}>Información del Dispositivo</Text>
+            </View>
 
             <Text style={styles.label}>Nombre del Vehículo</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Ej: Toyota Corolla 2020"
-              value={deviceName}
-              onChangeText={setDeviceName}
-            />
+            <View style={styles.inputContainer}>
+              <Ionicons name="car-outline" size={20} color="#6b7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="Ej: Toyota Corolla 2020"
+                value={deviceName}
+                onChangeText={setDeviceName}
+                placeholderTextColor="#9ca3af"
+              />
+            </View>
 
             <Text style={styles.label}>IMEI del GPS (15 dígitos)</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="123456789012345"
-              value={imei}
-              onChangeText={setImei}
-              keyboardType="numeric"
-              maxLength={15}
-            />
-            <Text style={styles.hint}>
-              💡 Envía "IMEI#" por SMS al GPS para obtenerlo
-            </Text>
+            <View style={styles.inputContainer}>
+              <Ionicons name="key-outline" size={20} color="#6b7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                placeholder="123456789012345"
+                value={imei}
+                onChangeText={setImei}
+                keyboardType="numeric"
+                maxLength={15}
+                placeholderTextColor="#9ca3af"
+              />
+            </View>
+            <View style={styles.hint}>
+              <Ionicons name="bulb-outline" size={16} color="#6b7280" />
+              <Text style={styles.hintText}>
+                Envía "IMEI#" por SMS al GPS para obtenerlo
+              </Text>
+            </View>
 
             <Text style={styles.label}>Modelo del GPS</Text>
             {GPS_MODELS.map((model) => (
@@ -270,124 +298,150 @@ export default function DeviceSetupScreen() {
                 ]}
                 onPress={() => setSelectedModel(model)}
               >
-                <View style={styles.modelHeader}>
-                  <Text style={styles.modelName}>{model.name}</Text>
-                  <Badge
-                    label={model.protocol}
-                    variant="neutral"
-                    size="sm"
+                <View style={styles.modelIcon}>
+                  <Ionicons
+                    name={model.icon}
+                    size={24}
+                    color={selectedModel?.id === model.id ? '#3b82f6' : '#6b7280'}
                   />
                 </View>
-                <Text style={styles.modelDescription}>{model.description}</Text>
-                <Text style={styles.modelPort}>Puerto: {model.port}</Text>
+                <View style={styles.modelInfo}>
+                  <Text style={styles.modelName}>{model.name}</Text>
+                  <Text style={styles.modelDescription}>{model.description}</Text>
+                  <View style={styles.modelMeta}>
+                    <Badge label={model.protocol} variant="neutral" size="sm" />
+                    <Text style={styles.modelPort}>Puerto {model.port}</Text>
+                  </View>
+                </View>
+                {selectedModel?.id === model.id && (
+                  <Ionicons name="checkmark-circle" size={24} color="#3b82f6" />
+                )}
               </TouchableOpacity>
             ))}
 
             <Button
-              title="Siguiente →"
+              title="Continuar"
               onPress={handleStep1Next}
-              variant="gradient"
-              gradient={['#10b981', '#059669']}
+              variant="solid"
               size="lg"
               fullWidth
-              style={styles.nextButton}
+              style={styles.continueButton}
             />
-          </Card>
+          </View>
         )}
 
         {/* Step 2: SMS Commands */}
         {step === 2 && (
-          <Card variant="elevated" style={styles.card}>
-            <Text style={styles.stepTitle}>📨 Paso 2: Enviar Comandos SMS</Text>
-            <Text style={styles.stepDescription}>
-              Envía estos comandos uno por uno al número de teléfono del GPS:
-            </Text>
+          <View style={styles.stepContent}>
+            <View style={styles.sectionHeader}>
+              <MaterialIcons name="sms" size={24} color="#3b82f6" />
+              <Text style={styles.sectionTitle}>Comandos de Configuración</Text>
+            </View>
+
+            <Card variant="outlined" style={styles.instructionCard}>
+              <View style={styles.instructionHeader}>
+                <Ionicons name="information-circle" size={20} color="#3b82f6" />
+                <Text style={styles.instructionTitle}>Instrucciones</Text>
+              </View>
+              <Text style={styles.instructionText}>
+                Envía cada comando por SMS al número del GPS en el orden mostrado.
+                Espera confirmación "OK" antes del siguiente.
+              </Text>
+            </Card>
 
             {smsCommands.map((cmd, index) => (
-              <View key={index} style={styles.commandBox}>
+              <Card key={index} variant="elevated" style={styles.commandCard}>
                 <View style={styles.commandHeader}>
                   <Text style={styles.commandTitle}>{cmd.title}</Text>
                   <TouchableOpacity
                     style={styles.copyButton}
                     onPress={() => copyToClipboard(cmd.command)}
                   >
-                    <Text style={styles.copyButtonText}>📋 Copiar</Text>
+                    <Feather name="copy" size={16} color="#3b82f6" />
+                    <Text style={styles.copyText}>Copiar</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={styles.commandContent}>
-                  <Text style={styles.commandText}>{cmd.command}</Text>
+                <View style={styles.commandCodeBox}>
+                  <Text style={styles.commandCode}>{cmd.command}</Text>
                 </View>
-                <Text style={styles.commandNote}>💡 {cmd.note}</Text>
-              </View>
+                <View style={styles.commandNote}>
+                  <Ionicons name="information-circle-outline" size={14} color="#6b7280" />
+                  <Text style={styles.commandNoteText}>{cmd.note}</Text>
+                </View>
+              </Card>
             ))}
 
-            <Card variant="outlined" style={styles.infoBox}>
-              <Text style={styles.infoTitle}>ℹ️ Importante</Text>
-              <Text style={styles.infoText}>
-                • Envía los comandos en orden{'\n'}
-                • Espera confirmación "OK" antes del siguiente{'\n'}
-                • La SIM debe tener saldo y datos activos{'\n'}
-                • El GPS puede tardar 1-2 min en responder
-              </Text>
-            </Card>
-
-            <View style={styles.buttonRow}>
-              <Button
-                title="← Atrás"
-                onPress={() => setStep(1)}
-                variant="outline"
-                size="md"
-                style={styles.backButton}
-              />
-              <Button
-                title="Siguiente →"
-                onPress={() => setStep(3)}
-                variant="gradient"
-                gradient={['#10b981', '#059669']}
-                size="md"
-                style={styles.nextButton}
-              />
-            </View>
-          </Card>
+            <Button
+              title="Continuar a Verificación"
+              onPress={() => setStep(3)}
+              variant="solid"
+              size="lg"
+              fullWidth
+              style={styles.continueButton}
+            />
+          </View>
         )}
 
-        {/* Step 3: Verify Connection */}
+        {/* Step 3: Verification */}
         {step === 3 && (
-          <Card variant="elevated" style={styles.card}>
-            <Text style={styles.stepTitle}>✅ Paso 3: Verificar Conexión</Text>
-            <Text style={styles.stepDescription}>
-              Verifica que el GPS esté enviando datos al servidor
-            </Text>
-
-            <View style={styles.deviceSummary}>
-              <Text style={styles.summaryLabel}>Dispositivo:</Text>
-              <Text style={styles.summaryValue}>{deviceName}</Text>
-
-              <Text style={styles.summaryLabel}>IMEI:</Text>
-              <Text style={styles.summaryValue}>{imei}</Text>
-
-              <Text style={styles.summaryLabel}>Modelo:</Text>
-              <Text style={styles.summaryValue}>{selectedModel?.name}</Text>
-
-              <Text style={styles.summaryLabel}>Puerto:</Text>
-              <Text style={styles.summaryValue}>{selectedModel?.port}</Text>
+          <View style={styles.stepContent}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="checkmark-circle-outline" size={24} color="#3b82f6" />
+              <Text style={styles.sectionTitle}>Verificar Conexión</Text>
             </View>
 
+            <Card variant="elevated" style={styles.summaryCard}>
+              <View style={styles.summaryRow}>
+                <Ionicons name="car" size={20} color="#6b7280" />
+                <View style={styles.summaryInfo}>
+                  <Text style={styles.summaryLabel}>Dispositivo</Text>
+                  <Text style={styles.summaryValue}>{deviceName}</Text>
+                </View>
+              </View>
+              <View style={styles.summaryRow}>
+                <Ionicons name="key" size={20} color="#6b7280" />
+                <View style={styles.summaryInfo}>
+                  <Text style={styles.summaryLabel}>IMEI</Text>
+                  <Text style={styles.summaryValue}>{imei}</Text>
+                </View>
+              </View>
+              <View style={styles.summaryRow}>
+                <Ionicons name="hardware-chip" size={20} color="#6b7280" />
+                <View style={styles.summaryInfo}>
+                  <Text style={styles.summaryLabel}>Modelo</Text>
+                  <Text style={styles.summaryValue}>{selectedModel?.name}</Text>
+                </View>
+              </View>
+            </Card>
+
             {connectionStatus === 'idle' && (
-              <Card variant="outlined" style={styles.waitingBox}>
-                <Text style={styles.waitingText}>
-                  ⏳ Esperando conexión del GPS...{'\n\n'}
+              <Card variant="outlined" style={styles.statusCard}>
+                <Ionicons name="time-outline" size={48} color="#f59e0b" />
+                <Text style={styles.statusTitle}>Esperando Conexión</Text>
+                <Text style={styles.statusText}>
                   Después de enviar todos los comandos SMS, espera 2-3 minutos
                   para que el GPS se conecte al servidor.
                 </Text>
               </Card>
             )}
 
+            {connectionStatus === 'checking' && (
+              <Card variant="outlined" style={styles.statusCard}>
+                <Ionicons name="sync" size={48} color="#3b82f6" />
+                <Text style={styles.statusTitle}>Verificando...</Text>
+                <Text style={styles.statusText}>
+                  Consultando el servidor Traccar...
+                </Text>
+              </Card>
+            )}
+
             {connectionStatus === 'connected' && (
-              <Card variant="outlined" style={styles.successBox}>
-                <Text style={styles.successIcon}>✅</Text>
-                <Text style={styles.successTitle}>¡Conectado!</Text>
-                <Text style={styles.successText}>
+              <Card variant="outlined" style={[styles.statusCard, styles.statusSuccess]}>
+                <Ionicons name="checkmark-circle" size={48} color="#10b981" />
+                <Text style={[styles.statusTitle, styles.statusSuccessText]}>
+                  ¡Conectado Exitosamente!
+                </Text>
+                <Text style={styles.statusText}>
                   El GPS está enviando datos correctamente.{'\n'}
                   Última posición recibida hace 30 segundos.
                 </Text>
@@ -395,12 +449,13 @@ export default function DeviceSetupScreen() {
             )}
 
             {connectionStatus === 'failed' && (
-              <Card variant="outlined" style={styles.errorBox}>
-                <Text style={styles.errorIcon}>❌</Text>
-                <Text style={styles.errorTitle}>Sin Conexión</Text>
-                <Text style={styles.errorText}>
-                  El GPS aún no ha enviado datos.{'\n\n'}
-                  Verifica que:{'\n'}
+              <Card variant="outlined" style={[styles.statusCard, styles.statusError]}>
+                <Ionicons name="alert-circle" size={48} color="#ef4444" />
+                <Text style={[styles.statusTitle, styles.statusErrorText]}>
+                  Sin Conexión
+                </Text>
+                <Text style={styles.statusText}>
+                  El GPS aún no ha enviado datos. Verifica que:{'\n\n'}
                   • Enviaste todos los comandos SMS{'\n'}
                   • El GPS tiene señal GSM (LED encendido){'\n'}
                   • La SIM tiene datos activos
@@ -412,8 +467,7 @@ export default function DeviceSetupScreen() {
               title={verifying ? 'Verificando...' : 'Verificar Conexión'}
               onPress={handleVerifyConnection}
               loading={verifying}
-              variant="gradient"
-              gradient={['#10b981', '#059669']}
+              variant="outline"
               size="lg"
               fullWidth
               style={styles.verifyButton}
@@ -429,16 +483,7 @@ export default function DeviceSetupScreen() {
                 style={styles.finishButton}
               />
             )}
-
-            <Button
-              title="← Atrás"
-              onPress={() => setStep(2)}
-              variant="outline"
-              size="md"
-              fullWidth
-              style={styles.backButton}
-            />
-          </Card>
+          </View>
         )}
       </ScrollView>
     </View>
@@ -448,150 +493,205 @@ export default function DeviceSetupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f9fafb',
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.lg,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'web' ? Spacing.base : Spacing.xxxl,
+    paddingBottom: Spacing.base,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
   },
-  headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
-    marginBottom: Spacing.xs,
-  },
-  headerSubtitle: {
-    fontSize: Typography.fontSize.base,
-    color: 'rgba(255, 255, 255, 0.9)',
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.base,
     marginBottom: Spacing.lg,
   },
-  progressContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: Spacing.base,
-  },
-  progressStep: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  progressCircle: {
-    width: 40,
-    height: 40,
+  backButton: {
+    padding: Spacing.sm,
     borderRadius: BorderRadius.full,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: '#f3f4f6',
+  },
+  headerTitle: {
+    fontSize: Typography.fontSize.lg,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#1f2937',
+  },
+  headerSpacer: {
+    width: 40,
+  },
+  stepsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: Spacing.xl,
+  },
+  stepItem: {
     alignItems: 'center',
   },
-  progressCircleActive: {
-    backgroundColor: '#ffffff',
+  stepCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#e5e7eb',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: Spacing.xs,
   },
-  progressNumber: {
-    fontSize: Typography.fontSize.base,
+  stepCircleActive: {
+    backgroundColor: '#3b82f6',
+  },
+  stepNumber: {
+    fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.bold,
+    color: '#9ca3af',
+  },
+  stepNumberActive: {
     color: '#ffffff',
   },
-  progressNumberActive: {
-    color: '#10b981',
+  stepLabel: {
+    fontSize: Typography.fontSize.xs,
+    color: '#6b7280',
   },
-  progressLine: {
+  stepLabelActive: {
+    color: '#3b82f6',
+    fontWeight: Typography.fontWeight.semibold,
+  },
+  stepLine: {
     width: 60,
     height: 2,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: '#e5e7eb',
+    marginHorizontal: Spacing.xs,
   },
-  progressLineActive: {
-    backgroundColor: '#ffffff',
-  },
-  progressLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: Spacing.sm,
-  },
-  progressLabel: {
-    fontSize: Typography.fontSize.sm,
-    color: '#ffffff',
-    fontWeight: Typography.fontWeight.semibold,
+  stepLineActive: {
+    backgroundColor: '#3b82f6',
   },
   content: {
     flex: 1,
+  },
+  stepContent: {
     padding: Spacing.base,
   },
-  card: {
-    marginBottom: Spacing.base,
-  },
-  stepTitle: {
-    fontSize: Typography.fontSize.xl,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.light.text,
-    marginBottom: Spacing.base,
-  },
-  stepDescription: {
-    fontSize: Typography.fontSize.base,
-    color: Colors.light.textSecondary,
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: Spacing.lg,
   },
+  sectionTitle: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#1f2937',
+    marginLeft: Spacing.sm,
+  },
   label: {
-    fontSize: Typography.fontSize.base,
+    fontSize: Typography.fontSize.sm,
     fontWeight: Typography.fontWeight.semibold,
-    color: Colors.light.text,
+    color: '#374151',
     marginBottom: Spacing.sm,
     marginTop: Spacing.base,
   },
-  input: {
-    backgroundColor: Colors.light.background,
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: Colors.light.border,
+    borderColor: '#d1d5db',
     borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.md,
+  },
+  inputIcon: {
+    marginRight: Spacing.sm,
+  },
+  input: {
+    flex: 1,
     paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.base,
     fontSize: Typography.fontSize.base,
-    marginBottom: Spacing.xs,
+    color: '#1f2937',
   },
   hint: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.light.textSecondary,
-    fontStyle: 'italic',
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: Spacing.xs,
     marginBottom: Spacing.base,
   },
+  hintText: {
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+    marginLeft: Spacing.xs,
+  },
   modelCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: Spacing.base,
+    backgroundColor: '#ffffff',
     borderWidth: 2,
-    borderColor: Colors.light.border,
+    borderColor: '#e5e7eb',
     borderRadius: BorderRadius.md,
     marginBottom: Spacing.md,
   },
   modelCardSelected: {
-    borderColor: Colors.success['500'],
-    backgroundColor: 'rgba(16, 185, 129, 0.05)',
+    borderColor: '#3b82f6',
+    backgroundColor: '#eff6ff',
   },
-  modelHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  modelIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.md,
+    backgroundColor: '#f3f4f6',
+    justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: Spacing.xs,
+    marginRight: Spacing.md,
+  },
+  modelInfo: {
+    flex: 1,
   },
   modelName: {
     fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.light.text,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#1f2937',
+    marginBottom: Spacing.xs / 2,
   },
   modelDescription: {
     fontSize: Typography.fontSize.sm,
-    color: Colors.light.textSecondary,
+    color: '#6b7280',
     marginBottom: Spacing.xs,
+  },
+  modelMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
   modelPort: {
     fontSize: Typography.fontSize.xs,
-    color: Colors.light.textTertiary,
+    color: '#9ca3af',
   },
-  commandBox: {
-    backgroundColor: Colors.light.background,
-    borderWidth: 1,
-    borderColor: Colors.light.border,
-    borderRadius: BorderRadius.md,
+  instructionCard: {
+    backgroundColor: '#eff6ff',
+    borderColor: '#3b82f6',
     padding: Spacing.base,
+    marginBottom: Spacing.lg,
+  },
+  instructionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+  },
+  instructionTitle: {
+    fontSize: Typography.fontSize.base,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#1e40af',
+    marginLeft: Spacing.sm,
+  },
+  instructionText: {
+    fontSize: Typography.fontSize.sm,
+    color: '#1e40af',
+    lineHeight: 20,
+  },
+  commandCard: {
     marginBottom: Spacing.base,
+    padding: Spacing.base,
   },
   commandHeader: {
     flexDirection: 'row',
@@ -601,144 +701,109 @@ const styles = StyleSheet.create({
   },
   commandTitle: {
     fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.light.text,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#1f2937',
   },
   copyButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: Spacing.xs,
     paddingHorizontal: Spacing.md,
-    backgroundColor: Colors.primary['500'],
+    backgroundColor: '#eff6ff',
     borderRadius: BorderRadius.sm,
+    gap: Spacing.xs,
   },
-  copyButtonText: {
+  copyText: {
     fontSize: Typography.fontSize.sm,
-    color: '#ffffff',
+    color: '#3b82f6',
     fontWeight: Typography.fontWeight.semibold,
   },
-  commandContent: {
-    backgroundColor: '#f3f4f6',
+  commandCodeBox: {
+    backgroundColor: '#1f2937',
     padding: Spacing.md,
     borderRadius: BorderRadius.sm,
     marginBottom: Spacing.sm,
   },
-  commandText: {
-    fontSize: Typography.fontSize.base,
+  commandCode: {
+    fontSize: Typography.fontSize.sm,
     fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    color: Colors.light.text,
+    color: '#10b981',
   },
   commandNote: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.light.textSecondary,
-    fontStyle: 'italic',
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: Spacing.xs,
   },
-  infoBox: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#3b82f6',
+  commandNoteText: {
+    flex: 1,
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+  },
+  summaryCard: {
     padding: Spacing.base,
     marginBottom: Spacing.lg,
   },
-  infoTitle: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#1e40af',
-    marginBottom: Spacing.sm,
+  summaryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f3f4f6',
   },
-  infoText: {
-    fontSize: Typography.fontSize.sm,
-    color: '#1e3a8a',
-    lineHeight: 20,
-  },
-  deviceSummary: {
-    backgroundColor: Colors.light.background,
-    padding: Spacing.base,
-    borderRadius: BorderRadius.md,
-    marginBottom: Spacing.base,
+  summaryInfo: {
+    marginLeft: Spacing.md,
+    flex: 1,
   },
   summaryLabel: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.light.textSecondary,
-    marginTop: Spacing.sm,
+    fontSize: Typography.fontSize.xs,
+    color: '#6b7280',
+    marginBottom: 2,
   },
   summaryValue: {
     fontSize: Typography.fontSize.base,
     fontWeight: Typography.fontWeight.semibold,
-    color: Colors.light.text,
-    marginBottom: Spacing.xs,
+    color: '#1f2937',
   },
-  waitingBox: {
-    backgroundColor: '#fef3c7',
-    borderColor: '#f59e0b',
-    padding: Spacing.lg,
+  statusCard: {
+    padding: Spacing.xl,
     alignItems: 'center',
-    marginBottom: Spacing.base,
+    marginBottom: Spacing.lg,
+    borderColor: '#e5e7eb',
   },
-  waitingText: {
-    fontSize: Typography.fontSize.base,
-    color: '#92400e',
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  successBox: {
-    backgroundColor: '#d1fae5',
+  statusSuccess: {
+    backgroundColor: '#f0fdf4',
     borderColor: '#10b981',
-    padding: Spacing.lg,
-    alignItems: 'center',
-    marginBottom: Spacing.base,
   },
-  successIcon: {
-    fontSize: 48,
-    marginBottom: Spacing.sm,
-  },
-  successTitle: {
-    fontSize: Typography.fontSize.xl,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#065f46',
-    marginBottom: Spacing.sm,
-  },
-  successText: {
-    fontSize: Typography.fontSize.base,
-    color: '#064e3b',
-    textAlign: 'center',
-    lineHeight: 22,
-  },
-  errorBox: {
-    backgroundColor: '#fee2e2',
+  statusError: {
+    backgroundColor: '#fef2f2',
     borderColor: '#ef4444',
-    padding: Spacing.lg,
-    alignItems: 'center',
-    marginBottom: Spacing.base,
   },
-  errorIcon: {
-    fontSize: 48,
-    marginBottom: Spacing.sm,
-  },
-  errorTitle: {
-    fontSize: Typography.fontSize.xl,
+  statusTitle: {
+    fontSize: Typography.fontSize.lg,
     fontWeight: Typography.fontWeight.bold,
-    color: '#991b1b',
+    color: '#1f2937',
+    marginTop: Spacing.md,
     marginBottom: Spacing.sm,
   },
-  errorText: {
-    fontSize: Typography.fontSize.base,
-    color: '#7f1d1d',
+  statusSuccessText: {
+    color: '#065f46',
+  },
+  statusErrorText: {
+    color: '#991b1b',
+  },
+  statusText: {
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
     textAlign: 'center',
-    lineHeight: 22,
+    lineHeight: 20,
   },
-  buttonRow: {
-    flexDirection: 'row',
-    gap: Spacing.md,
-    marginTop: Spacing.base,
-  },
-  nextButton: {
-    flex: 1,
-  },
-  backButton: {
-    flex: 1,
+  continueButton: {
+    marginTop: Spacing.lg,
   },
   verifyButton: {
     marginBottom: Spacing.md,
   },
   finishButton: {
-    marginBottom: Spacing.md,
+    marginBottom: Spacing.xl,
   },
 });

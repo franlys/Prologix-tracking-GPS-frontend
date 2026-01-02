@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { useSession } from '../../context/ctx';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -9,96 +9,130 @@ import { Button } from '../../components/ui/Button';
 interface QuickAction {
   id: string;
   title: string;
-  icon: string;
+  icon: keyof typeof Ionicons.glyphMap;
   description: string;
   route: string;
-  color: string;
-  gradient: [string, string];
+  bgColor: string;
+  iconColor: string;
 }
 
 const ADMIN_ACTIONS: QuickAction[] = [
   {
     id: 'device-setup',
     title: 'Configurar GPS',
-    icon: '📱',
+    icon: 'settings-outline',
     description: 'Wizard paso a paso para configurar nuevos dispositivos GPS',
     route: '/(admin)/device-setup',
-    color: '#10b981',
-    gradient: ['#10b981', '#059669'],
+    bgColor: '#10b981',
+    iconColor: '#ffffff',
   },
   {
     id: 'link-device',
     title: 'Vincular Dispositivo',
-    icon: '🔗',
+    icon: 'link-outline',
     description: 'Asignar dispositivos GPS a usuarios',
     route: '/(admin)/link-device',
-    color: '#3b82f6',
-    gradient: ['#3b82f6', '#2563eb'],
+    bgColor: '#3b82f6',
+    iconColor: '#ffffff',
   },
   {
     id: 'installers',
     title: 'Instaladores',
-    icon: '🔧',
+    icon: 'construct-outline',
     description: 'Gestionar instaladores y sus comisiones',
     route: '/(admin)/installers',
-    color: '#7c3aed',
-    gradient: ['#7c3aed', '#a78bfa'],
+    bgColor: '#7c3aed',
+    iconColor: '#ffffff',
   },
   {
     id: 'users',
     title: 'Usuarios',
-    icon: '👥',
+    icon: 'people-outline',
     description: 'Gestionar todos los usuarios del sistema',
     route: '/(admin)/users',
-    color: '#f59e0b',
-    gradient: ['#f59e0b', '#fbbf24'],
+    bgColor: '#f59e0b',
+    iconColor: '#ffffff',
   },
   {
     id: 'commissions',
     title: 'Comisiones',
-    icon: '💰',
+    icon: 'cash-outline',
     description: 'Ver reporte de comisiones pagadas',
     route: '/(admin)/commissions',
-    color: '#ec4899',
-    gradient: ['#ec4899', '#f472b6'],
+    bgColor: '#ec4899',
+    iconColor: '#ffffff',
   },
   {
     id: 'devices-all',
     title: 'Todos los GPS',
-    icon: '🗺️',
+    icon: 'map-outline',
     description: 'Ver todos los dispositivos del sistema',
     route: '/(tabs)/devices',
-    color: '#06b6d4',
-    gradient: ['#06b6d4', '#22d3ee'],
+    bgColor: '#06b6d4',
+    iconColor: '#ffffff',
   },
 ];
 
 export default function AdminDashboard() {
   const router = useRouter();
-  const { user } = useSession();
+  const { user, signOut } = useSession();
+
+  const handleLogout = () => {
+    signOut();
+    router.replace('/(auth)/login');
+  };
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#7c3aed', '#a78bfa']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Panel de Administración</Text>
-        <Text style={styles.headerSubtitle}>Bienvenido, {user?.name || 'Admin'}</Text>
-      </LinearGradient>
+      {/* Professional Header */}
+      <View style={styles.header}>
+        <View style={styles.headerContent}>
+          <View>
+            <Text style={styles.headerTitle}>Panel de Administración</Text>
+            <Text style={styles.headerSubtitle}>
+              Bienvenido, {user?.name || 'Admin'}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
+            <Ionicons name="log-out-outline" size={24} color="#374151" />
+          </TouchableOpacity>
+        </View>
+      </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Welcome Card */}
-        <Card variant="elevated" style={styles.welcomeCard}>
-          <Text style={styles.welcomeTitle}>🎯 Acciones Rápidas</Text>
-          <Text style={styles.welcomeText}>
-            Selecciona una opción para gestionar el sistema Prologix GPS
-          </Text>
-        </Card>
+        {/* Stats Overview */}
+        <View style={styles.statsContainer}>
+          <Card variant="elevated" style={styles.statCard}>
+            <View style={[styles.statIcon, { backgroundColor: '#eff6ff' }]}>
+              <Ionicons name="hardware-chip-outline" size={24} color="#3b82f6" />
+            </View>
+            <Text style={styles.statValue}>--</Text>
+            <Text style={styles.statLabel}>GPS Activos</Text>
+          </Card>
 
-        {/* Quick Actions Grid */}
+          <Card variant="elevated" style={styles.statCard}>
+            <View style={[styles.statIcon, { backgroundColor: '#f0fdf4' }]}>
+              <Ionicons name="people-outline" size={24} color="#10b981" />
+            </View>
+            <Text style={styles.statValue}>--</Text>
+            <Text style={styles.statLabel}>Usuarios</Text>
+          </Card>
+
+          <Card variant="elevated" style={styles.statCard}>
+            <View style={[styles.statIcon, { backgroundColor: '#fef3c7' }]}>
+              <Ionicons name="construct-outline" size={24} color="#f59e0b" />
+            </View>
+            <Text style={styles.statValue}>--</Text>
+            <Text style={styles.statLabel}>Instaladores</Text>
+          </Card>
+        </View>
+
+        {/* Quick Actions */}
+        <View style={styles.sectionHeader}>
+          <Ionicons name="flash-outline" size={20} color="#374151" />
+          <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
+        </View>
+
         <View style={styles.actionsGrid}>
           {ADMIN_ACTIONS.map((action) => (
             <TouchableOpacity
@@ -108,22 +142,19 @@ export default function AdminDashboard() {
               style={styles.actionCardWrapper}
             >
               <Card variant="elevated" style={styles.actionCard}>
-                <LinearGradient
-                  colors={action.gradient}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 1 }}
-                  style={styles.actionGradient}
-                >
-                  <Text style={styles.actionIcon}>{action.icon}</Text>
-                </LinearGradient>
+                <View style={[styles.actionIconContainer, { backgroundColor: action.bgColor }]}>
+                  <Ionicons name={action.icon} size={28} color={action.iconColor} />
+                </View>
 
                 <View style={styles.actionContent}>
                   <Text style={styles.actionTitle}>{action.title}</Text>
-                  <Text style={styles.actionDescription}>{action.description}</Text>
+                  <Text style={styles.actionDescription} numberOfLines={2}>
+                    {action.description}
+                  </Text>
                 </View>
 
                 <View style={styles.actionFooter}>
-                  <Text style={styles.actionCTA}>Abrir →</Text>
+                  <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
                 </View>
               </Card>
             </TouchableOpacity>
@@ -131,38 +162,102 @@ export default function AdminDashboard() {
         </View>
 
         {/* System Info */}
+        <View style={styles.sectionHeader}>
+          <Ionicons name="information-circle-outline" size={20} color="#374151" />
+          <Text style={styles.sectionTitle}>Información del Sistema</Text>
+        </View>
+
         <Card variant="outlined" style={styles.infoCard}>
-          <Text style={styles.infoTitle}>ℹ️ Sistema Prologix GPS</Text>
-          <Text style={styles.infoText}>
-            • Versión: 1.3.0{'\n'}
-            • Estado: Operacional{'\n'}
-            • Plataforma GPS: GPS-Trace + Traccar{'\n'}
-            • Rol: Administrador
-          </Text>
+          <View style={styles.infoRow}>
+            <View style={styles.infoIcon}>
+              <Ionicons name="shield-checkmark-outline" size={20} color="#10b981" />
+            </View>
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Estado</Text>
+              <Text style={styles.infoValue}>Operacional</Text>
+            </View>
+          </View>
+
+          <View style={styles.infoDivider} />
+
+          <View style={styles.infoRow}>
+            <View style={styles.infoIcon}>
+              <Ionicons name="code-outline" size={20} color="#3b82f6" />
+            </View>
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Versión</Text>
+              <Text style={styles.infoValue}>1.3.0</Text>
+            </View>
+          </View>
+
+          <View style={styles.infoDivider} />
+
+          <View style={styles.infoRow}>
+            <View style={styles.infoIcon}>
+              <Ionicons name="server-outline" size={20} color="#7c3aed" />
+            </View>
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Plataforma GPS</Text>
+              <Text style={styles.infoValue}>GPS-Trace + Traccar</Text>
+            </View>
+          </View>
+
+          <View style={styles.infoDivider} />
+
+          <View style={styles.infoRow}>
+            <View style={styles.infoIcon}>
+              <Ionicons name="person-circle-outline" size={20} color="#f59e0b" />
+            </View>
+            <View style={styles.infoContent}>
+              <Text style={styles.infoLabel}>Rol</Text>
+              <Text style={styles.infoValue}>Administrador</Text>
+            </View>
+          </View>
         </Card>
 
         {/* Help Card */}
-        <Card variant="outlined" style={styles.helpCard}>
-          <Text style={styles.helpTitle}>💡 Flujo de Trabajo Recomendado</Text>
-          <Text style={styles.helpText}>
-            1. Configura el GPS nuevo (Configurar GPS){'\n'}
-            2. Vincula el GPS a un usuario (Vincular Dispositivo){'\n'}
-            3. El usuario puede ver su GPS en la app{'\n'}
-            4. El instalador recibe su comisión automáticamente
-          </Text>
-        </Card>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="help-circle-outline" size={20} color="#374151" />
+          <Text style={styles.sectionTitle}>Guía Rápida</Text>
+        </View>
 
-        {/* Logout Button */}
-        <Button
-          title="Cerrar Sesión"
-          onPress={() => {
-            router.replace('/(auth)/login');
-          }}
-          variant="outline"
-          size="md"
-          fullWidth
-          style={styles.logoutButton}
-        />
+        <Card variant="outlined" style={styles.helpCard}>
+          <View style={styles.helpStep}>
+            <View style={styles.stepNumber}>
+              <Text style={styles.stepNumberText}>1</Text>
+            </View>
+            <Text style={styles.helpStepText}>
+              Configura el GPS nuevo (Configurar GPS)
+            </Text>
+          </View>
+
+          <View style={styles.helpStep}>
+            <View style={styles.stepNumber}>
+              <Text style={styles.stepNumberText}>2</Text>
+            </View>
+            <Text style={styles.helpStepText}>
+              Vincula el GPS a un usuario (Vincular Dispositivo)
+            </Text>
+          </View>
+
+          <View style={styles.helpStep}>
+            <View style={styles.stepNumber}>
+              <Text style={styles.stepNumberText}>3</Text>
+            </View>
+            <Text style={styles.helpStepText}>
+              El usuario puede ver su GPS en la app móvil
+            </Text>
+          </View>
+
+          <View style={styles.helpStep}>
+            <View style={styles.stepNumber}>
+              <Text style={styles.stepNumberText}>4</Text>
+            </View>
+            <Text style={styles.helpStepText}>
+              El instalador recibe su comisión automáticamente
+            </Text>
+          </View>
+        </Card>
 
         <View style={styles.footer}>
           <Text style={styles.footerText}>
@@ -177,130 +272,193 @@ export default function AdminDashboard() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f9fafb',
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.xl,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'web' ? Spacing.base : Spacing.xxxl,
+    paddingBottom: Spacing.base,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.base,
   },
   headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
+    fontSize: Typography.fontSize.xl,
     fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
-    marginBottom: Spacing.xs,
+    color: '#1f2937',
+    marginBottom: Spacing.xs / 2,
   },
   headerSubtitle: {
-    fontSize: Typography.fontSize.lg,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+  },
+  logoutButton: {
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#f3f4f6',
   },
   content: {
     flex: 1,
+  },
+  statsContainer: {
+    flexDirection: 'row',
     padding: Spacing.base,
+    gap: Spacing.md,
   },
-  welcomeCard: {
-    marginBottom: Spacing.lg,
-    padding: Spacing.lg,
+  statCard: {
+    flex: 1,
+    padding: Spacing.base,
+    alignItems: 'center',
   },
-  welcomeTitle: {
-    fontSize: Typography.fontSize.xl,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.light.text,
+  statIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: BorderRadius.full,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: Spacing.sm,
   },
-  welcomeText: {
+  statValue: {
+    fontSize: Typography.fontSize.xxl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#1f2937',
+    marginBottom: Spacing.xs / 2,
+  },
+  statLabel: {
+    fontSize: Typography.fontSize.xs,
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.base,
+    paddingTop: Spacing.lg,
+    paddingBottom: Spacing.md,
+  },
+  sectionTitle: {
     fontSize: Typography.fontSize.base,
-    color: Colors.light.textSecondary,
-    lineHeight: 22,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#374151',
+    marginLeft: Spacing.sm,
   },
   actionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.base,
-    marginBottom: Spacing.lg,
+    paddingHorizontal: Spacing.base,
+    gap: Spacing.md,
   },
   actionCardWrapper: {
-    width: Platform.OS === 'web' ? 'calc(50% - 8px)' : '48%',
-    minWidth: 160,
+    marginBottom: Spacing.md,
   },
   actionCard: {
-    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: Spacing.base,
   },
-  actionGradient: {
-    height: 80,
+  actionIconContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: BorderRadius.md,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  actionIcon: {
-    fontSize: 40,
-  },
   actionContent: {
-    padding: Spacing.base,
-    minHeight: 80,
+    flex: 1,
+    marginLeft: Spacing.base,
   },
   actionTitle: {
     fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: Colors.light.text,
-    marginBottom: Spacing.xs,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#1f2937',
+    marginBottom: Spacing.xs / 2,
   },
   actionDescription: {
     fontSize: Typography.fontSize.sm,
-    color: Colors.light.textSecondary,
+    color: '#6b7280',
     lineHeight: 18,
   },
   actionFooter: {
-    paddingHorizontal: Spacing.base,
-    paddingBottom: Spacing.base,
-  },
-  actionCTA: {
-    fontSize: Typography.fontSize.sm,
-    fontWeight: Typography.fontWeight.semibold,
-    color: Colors.primary['500'],
+    marginLeft: Spacing.sm,
   },
   infoCard: {
-    padding: Spacing.base,
-    marginBottom: Spacing.base,
-    backgroundColor: '#eff6ff',
-    borderColor: '#3b82f6',
-  },
-  infoTitle: {
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#1e40af',
-    marginBottom: Spacing.sm,
-  },
-  infoText: {
-    fontSize: Typography.fontSize.sm,
-    color: '#1e3a8a',
-    lineHeight: 20,
-  },
-  helpCard: {
+    marginHorizontal: Spacing.base,
     padding: Spacing.base,
     marginBottom: Spacing.lg,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  infoIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#f9fafb',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  infoContent: {
+    marginLeft: Spacing.md,
+    flex: 1,
+  },
+  infoLabel: {
+    fontSize: Typography.fontSize.xs,
+    color: '#9ca3af',
+    marginBottom: 2,
+  },
+  infoValue: {
+    fontSize: Typography.fontSize.sm,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#1f2937',
+  },
+  infoDivider: {
+    height: 1,
+    backgroundColor: '#f3f4f6',
+    marginVertical: Spacing.md,
+  },
+  helpCard: {
+    marginHorizontal: Spacing.base,
+    padding: Spacing.base,
+    marginBottom: Spacing.xl,
     backgroundColor: '#f0fdf4',
     borderColor: '#10b981',
   },
-  helpTitle: {
-    fontSize: Typography.fontSize.base,
+  helpStep: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: Spacing.md,
+  },
+  stepNumber: {
+    width: 24,
+    height: 24,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#10b981',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: Spacing.sm,
+  },
+  stepNumberText: {
+    fontSize: Typography.fontSize.xs,
     fontWeight: Typography.fontWeight.bold,
-    color: '#065f46',
-    marginBottom: Spacing.sm,
+    color: '#ffffff',
   },
-  helpText: {
+  helpStepText: {
+    flex: 1,
     fontSize: Typography.fontSize.sm,
-    color: '#064e3b',
+    color: '#065f46',
     lineHeight: 20,
-  },
-  logoutButton: {
-    marginBottom: Spacing.xl,
+    paddingTop: 2,
   },
   footer: {
     alignItems: 'center',
     paddingVertical: Spacing.xl,
   },
   footerText: {
-    fontSize: Typography.fontSize.sm,
-    color: Colors.light.textTertiary,
+    fontSize: Typography.fontSize.xs,
+    color: '#9ca3af',
   },
 });
