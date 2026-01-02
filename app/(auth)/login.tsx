@@ -43,7 +43,7 @@ export default function LoginNew() {
 
       // Redirect based on role
       if (user.role === 'ADMIN') {
-        router.replace('/(admin)/installers');
+        router.replace('/(admin)/dashboard');
       } else if (user.role === 'INSTALLER') {
         router.replace('/(installer)/dashboard');
       } else {
