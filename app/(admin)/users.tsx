@@ -10,7 +10,8 @@ import {
   Alert,
   RefreshControl,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography, Shadows } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
@@ -18,6 +19,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 
 export default function AdminUsersScreen() {
+  const router = useRouter();
   const [users, setUsers] = useState<any[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -86,21 +88,22 @@ export default function AdminUsersScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#1e3a8a', '#3b82f6']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Panel Admin</Text>
-        <Text style={styles.headerSubtitle}>Vincular Dispositivos GPS</Text>
-      </LinearGradient>
+      {/* Professional Header */}
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1f2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Usuarios</Text>
+          <View style={styles.headerSpacer} />
+        </View>
+        <Text style={styles.headerSubtitle}>Gestión de usuarios del sistema</Text>
+      </View>
 
       <View style={styles.content}>
         {/* Search */}
         <View style={styles.searchContainer}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Ionicons name="search-outline" size={20} color="#6b7280" style={styles.searchIcon} />
           <TextInput
             style={styles.searchInput}
             placeholder="Buscar por nombre o email..."
@@ -122,7 +125,7 @@ export default function AdminUsersScreen() {
             <Card variant="elevated" style={styles.userCard}>
               <View style={styles.userHeader}>
                 <View style={styles.userIcon}>
-                  <Text style={styles.userIconText}>👤</Text>
+                  <Ionicons name="person-outline" size={24} color="#3b82f6" />
                 </View>
 
                 <View style={styles.userInfo}>
@@ -136,7 +139,7 @@ export default function AdminUsersScreen() {
                       size="sm"
                     />
                     {item.gpsTraceUserId && (
-                      <Badge label="✅ GPS Vinculado" variant="success" size="sm" />
+                      <Badge label="GPS Vinculado" variant="success" size="sm" />
                     )}
                   </View>
                 </View>
@@ -224,22 +227,42 @@ export default function AdminUsersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f9fafb',
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.lg,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'web' ? Spacing.base : Spacing.xxxl,
+    paddingBottom: Spacing.base,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
   },
-  headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.base,
     marginBottom: Spacing.xs,
   },
+  backButton: {
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#f3f4f6',
+  },
+  headerSpacer: {
+    width: 40,
+  },
+  headerTitle: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#1f2937',
+    flex: 1,
+    textAlign: 'center',
+  },
   headerSubtitle: {
-    fontSize: Typography.fontSize.base,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+    paddingHorizontal: Spacing.base,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -256,7 +279,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.light.border,
   },
   searchIcon: {
-    fontSize: 20,
     marginRight: Spacing.sm,
   },
   searchInput: {
@@ -280,13 +302,10 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f3f4f6',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Spacing.md,
-  },
-  userIconText: {
-    fontSize: 24,
   },
   userInfo: {
     flex: 1,

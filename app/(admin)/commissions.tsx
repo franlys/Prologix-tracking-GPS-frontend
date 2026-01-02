@@ -8,8 +8,8 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
@@ -101,21 +101,19 @@ export default function AdminCommissionsScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#10b981', '#059669']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Volver</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Resumen de Comisiones</Text>
+      {/* Professional Header */}
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1f2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Comisiones</Text>
+          <View style={styles.headerSpacer} />
+        </View>
         <Text style={styles.headerSubtitle}>
-          Gestión de pagos a instaladores
+          Resumen y gestión de pagos a instaladores
         </Text>
-      </LinearGradient>
+      </View>
 
       <View style={styles.content}>
         {/* Stats Cards */}
@@ -266,9 +264,12 @@ export default function AdminCommissionsScreen() {
                 {item.paidAt && (
                   <View style={styles.detailRow}>
                     <Text style={styles.detailLabel}>Pagado:</Text>
-                    <Text style={[styles.detailValue, styles.paidDate]}>
-                      ✓ {formatDate(item.paidAt)}
-                    </Text>
+                    <View style={styles.paidDateContainer}>
+                      <Ionicons name="checkmark-circle" size={16} color="#10b981" />
+                      <Text style={[styles.detailValue, styles.paidDate]}>
+                        {formatDate(item.paidAt)}
+                      </Text>
+                    </View>
                   </View>
                 )}
               </View>
@@ -276,7 +277,9 @@ export default function AdminCommissionsScreen() {
           )}
           ListEmptyComponent={
             <Card variant="outlined" style={styles.emptyCard}>
-              <Text style={styles.emptyIcon}>💰</Text>
+              <View style={styles.emptyIconContainer}>
+                <Ionicons name="cash-outline" size={64} color="#9ca3af" />
+              </View>
               <Text style={styles.emptyText}>
                 No hay comisiones {filter !== 'ALL' && filter.toLowerCase()}
               </Text>
@@ -291,30 +294,42 @@ export default function AdminCommissionsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f9fafb',
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.lg,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'web' ? Spacing.base : Spacing.xxxl,
+    paddingBottom: Spacing.base,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
   },
-  backButton: {
-    marginBottom: Spacing.md,
-  },
-  backButtonText: {
-    color: '#ffffff',
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.medium,
-  },
-  headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.base,
     marginBottom: Spacing.xs,
   },
+  backButton: {
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#f3f4f6',
+  },
+  headerSpacer: {
+    width: 40,
+  },
+  headerTitle: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#1f2937',
+    flex: 1,
+    textAlign: 'center',
+  },
   headerSubtitle: {
-    fontSize: Typography.fontSize.base,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+    paddingHorizontal: Spacing.base,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -493,14 +508,18 @@ const styles = StyleSheet.create({
   },
   paidDate: {
     color: '#10b981',
+    marginLeft: Spacing.xs / 2,
+  },
+  paidDateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   emptyCard: {
     padding: Spacing.xxxl,
     alignItems: 'center',
     marginTop: Spacing.xl,
   },
-  emptyIcon: {
-    fontSize: 64,
+  emptyIconContainer: {
     marginBottom: Spacing.base,
   },
   emptyText: {

@@ -9,8 +9,8 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
@@ -81,19 +81,17 @@ export default function CreateInstallerScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#7c3aed', '#a78bfa']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <Text style={styles.backButtonText}>← Volver</Text>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Crear Instalador</Text>
+      {/* Professional Header */}
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1f2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Crear Instalador</Text>
+          <View style={styles.headerSpacer} />
+        </View>
         <Text style={styles.headerSubtitle}>Nuevo perfil de instalador</Text>
-      </LinearGradient>
+      </View>
 
       <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
         <Card variant="elevated" style={styles.formCard}>
@@ -161,7 +159,9 @@ export default function CreateInstallerScreen() {
           </View>
 
           <View style={styles.infoBox}>
-            <Text style={styles.infoIcon}>ℹ️</Text>
+            <View style={styles.infoIconContainer}>
+              <Ionicons name="information-circle-outline" size={24} color="#3b82f6" />
+            </View>
             <View style={styles.infoTextContainer}>
               <Text style={styles.infoTitle}>Permisos del Instalador</Text>
               <Text style={styles.infoText}>
@@ -201,30 +201,42 @@ export default function CreateInstallerScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f9fafb',
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.lg,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'web' ? Spacing.base : Spacing.xxxl,
+    paddingBottom: Spacing.base,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
   },
-  backButton: {
-    marginBottom: Spacing.md,
-  },
-  backButtonText: {
-    color: '#ffffff',
-    fontSize: Typography.fontSize.base,
-    fontWeight: Typography.fontWeight.medium,
-  },
-  headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.base,
     marginBottom: Spacing.xs,
   },
+  backButton: {
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#f3f4f6',
+  },
+  headerSpacer: {
+    width: 40,
+  },
+  headerTitle: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#1f2937',
+    flex: 1,
+    textAlign: 'center',
+  },
   headerSubtitle: {
-    fontSize: Typography.fontSize.base,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+    paddingHorizontal: Spacing.base,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -278,9 +290,9 @@ const styles = StyleSheet.create({
     padding: Spacing.base,
     marginVertical: Spacing.lg,
   },
-  infoIcon: {
-    fontSize: 24,
+  infoIconContainer: {
     marginRight: Spacing.sm,
+    paddingTop: 2,
   },
   infoTextContainer: {
     flex: 1,

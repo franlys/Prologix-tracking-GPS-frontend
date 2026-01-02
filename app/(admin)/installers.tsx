@@ -8,8 +8,8 @@ import {
   Platform,
   RefreshControl,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
@@ -67,18 +67,19 @@ export default function AdminInstallersScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <LinearGradient
-        colors={['#7c3aed', '#a78bfa']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Instaladores</Text>
+      {/* Professional Header */}
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#1f2937" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Instaladores</Text>
+          <View style={styles.headerSpacer} />
+        </View>
         <Text style={styles.headerSubtitle}>
           Gestión de instaladores y comisiones
         </Text>
-      </LinearGradient>
+      </View>
 
       <View style={styles.content}>
         {/* Quick Stats */}
@@ -116,16 +117,17 @@ export default function AdminInstallersScreen() {
               <Card variant="elevated" style={styles.installerCard}>
                 <View style={styles.installerHeader}>
                   <View style={styles.installerIcon}>
-                    <Text style={styles.installerIconText}>🔧</Text>
+                    <Ionicons name="construct-outline" size={24} color="#7c3aed" />
                   </View>
 
                   <View style={styles.installerInfo}>
                     <Text style={styles.installerName}>{item.name}</Text>
                     <Text style={styles.installerEmail}>{item.email}</Text>
                     {item.phoneNumber && (
-                      <Text style={styles.installerPhone}>
-                        📞 {item.phoneNumber}
-                      </Text>
+                      <View style={styles.phoneContainer}>
+                        <Ionicons name="call-outline" size={14} color="#6b7280" />
+                        <Text style={styles.installerPhone}>{item.phoneNumber}</Text>
+                      </View>
                     )}
                   </View>
                 </View>
@@ -138,7 +140,10 @@ export default function AdminInstallersScreen() {
                     </Text>
                   </View>
 
-                  <Text style={styles.viewDetailsText}>Ver detalles →</Text>
+                  <View style={styles.viewDetailsContainer}>
+                    <Text style={styles.viewDetailsText}>Ver detalles</Text>
+                    <Ionicons name="chevron-forward" size={16} color="#7c3aed" />
+                  </View>
                 </View>
               </Card>
             </TouchableOpacity>
@@ -146,7 +151,9 @@ export default function AdminInstallersScreen() {
           ListEmptyComponent={
             !loading ? (
               <Card variant="outlined" style={styles.emptyCard}>
-                <Text style={styles.emptyIcon}>🔧</Text>
+                <View style={styles.emptyIconContainer}>
+                  <Ionicons name="construct-outline" size={64} color="#9ca3af" />
+                </View>
                 <Text style={styles.emptyText}>
                   No hay instaladores registrados
                 </Text>
@@ -177,22 +184,42 @@ export default function AdminInstallersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f9fafb',
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.lg,
+    backgroundColor: '#ffffff',
+    paddingTop: Platform.OS === 'web' ? Spacing.base : Spacing.xxxl,
+    paddingBottom: Spacing.base,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
   },
-  headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
-    fontWeight: Typography.fontWeight.bold,
-    color: '#ffffff',
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.base,
     marginBottom: Spacing.xs,
   },
+  backButton: {
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: '#f3f4f6',
+  },
+  headerSpacer: {
+    width: 40,
+  },
+  headerTitle: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#1f2937',
+    flex: 1,
+    textAlign: 'center',
+  },
   headerSubtitle: {
-    fontSize: Typography.fontSize.base,
-    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+    paddingHorizontal: Spacing.base,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -231,16 +258,18 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   installerIcon: {
-    width: 52,
-    height: 52,
+    width: 48,
+    height: 48,
     borderRadius: BorderRadius.full,
-    backgroundColor: Colors.light.background,
+    backgroundColor: '#f3f4f6',
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: Spacing.md,
   },
-  installerIconText: {
-    fontSize: 28,
+  phoneContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs / 2,
   },
   installerInfo: {
     flex: 1,
@@ -277,9 +306,14 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.xs,
     color: Colors.light.textTertiary,
   },
+  viewDetailsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs / 2,
+  },
   viewDetailsText: {
     fontSize: Typography.fontSize.sm,
-    color: Colors.light.primary,
+    color: '#7c3aed',
     fontWeight: Typography.fontWeight.semibold,
   },
   emptyCard: {
@@ -287,8 +321,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: Spacing.xxxl,
   },
-  emptyIcon: {
-    fontSize: 64,
+  emptyIconContainer: {
     marginBottom: Spacing.base,
   },
   emptyText: {
