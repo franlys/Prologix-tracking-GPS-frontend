@@ -48,6 +48,7 @@ export function SessionProvider(props: React.PropsWithChildren) {
     // Validate user data on mount
     React.useEffect(() => {
         const validateUser = async () => {
+            // Only validate if we have a session and haven't validated yet
             if (session && !validated) {
                 try {
                     // Import api service dynamically to avoid circular dependency
@@ -68,6 +69,9 @@ export function SessionProvider(props: React.PropsWithChildren) {
                     setUser(null);
                     setValidated(true);
                 }
+            } else if (!session) {
+                // No session means user logged out or never logged in
+                setValidated(true);
             }
         };
 
@@ -85,9 +89,11 @@ export function SessionProvider(props: React.PropsWithChildren) {
                     }
                 },
                 signOut: () => {
+                    console.log('Signing out - clearing all session data');
                     setSession(null);
                     setUserData(null);
                     setUser(null);
+                    setValidated(false);
                 },
                 session,
                 user,
