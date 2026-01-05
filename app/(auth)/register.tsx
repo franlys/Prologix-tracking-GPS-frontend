@@ -23,6 +23,7 @@ export default function Register() {
     password: '',
     confirmPassword: '',
     phoneNumber: '',
+    referralCode: '',
   });
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -56,6 +57,7 @@ export default function Register() {
         email: formData.email,
         password: formData.password,
         phoneNumber: formData.phoneNumber || undefined,
+        referralCode: formData.referralCode || undefined,
       });
 
       setSuccess('¡Cuenta creada exitosamente! Iniciando sesión...');
@@ -155,6 +157,19 @@ export default function Register() {
                 onChangeText={(text) => setFormData({ ...formData, phoneNumber: text })}
                 keyboardType="phone-pad"
               />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Código de Referencia (opcional)</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="REF-INST-XXX"
+                placeholderTextColor={Colors.light.textTertiary}
+                value={formData.referralCode}
+                onChangeText={(text) => setFormData({ ...formData, referralCode: text.toUpperCase() })}
+                autoCapitalize="characters"
+              />
+              <Text style={styles.hint}>¿Te refirió un instalador? Ingresa su código aquí</Text>
             </View>
 
             <View style={styles.inputGroup}>
@@ -309,6 +324,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.base,
     fontSize: Typography.fontSize.base,
     color: Colors.light.text,
+  },
+  hint: {
+    fontSize: Typography.fontSize.xs,
+    color: Colors.light.textTertiary,
+    marginTop: Spacing.xs / 2,
+    fontStyle: 'italic',
   },
   registerButton: {
     marginTop: Spacing.base,

@@ -7,7 +7,9 @@ import {
   Platform,
   RefreshControl,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,6 +49,7 @@ export default function InstallerDashboardScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [referralCode, setReferralCode] = useState('REF-INST-001'); // TODO: Get from API
 
   useEffect(() => {
     fetchStats();
@@ -96,6 +99,20 @@ export default function InstallerDashboardScreen() {
   const getRecentCommissions = () => {
     if (!stats) return [];
     return stats.commissions.slice(0, 5);
+  };
+
+  const copyReferralCode = async () => {
+    try {
+      await Clipboard.setStringAsync(referralCode);
+      if (Platform.OS === 'web') {
+        alert('Código copiado al portapapeles');
+      } else {
+        Alert.alert('¡Copiado!', 'Código de referencia copiado al portapapeles');
+      }
+    } catch (error) {
+      console.error('Error copying to clipboard:', error);
+      Alert.alert('Error', 'No se pudo copiar el código');
+    }
   };
 
   if (loading) {
@@ -150,8 +167,8 @@ export default function InstallerDashboardScreen() {
         end={{ x: 1, y: 1 }}
         style={styles.header}
       >
-        <View style={styles.headerContent}>
-          <View style={styles.headerTextContainer}>
+        <View style={styles.headerTop}>
+          <View style={styles.headerLeft}>
             <Text style={styles.headerTitle}>Panel de Instalador</Text>
             <Text style={styles.headerSubtitle}>
               Tus comisiones y clientes
@@ -162,11 +179,29 @@ export default function InstallerDashboardScreen() {
               signOut();
               router.replace('/(auth)/login');
             }}
-            style={styles.logoutButton}
+            style={styles.logoutButtonHeader}
           >
-            <Ionicons name="log-out-outline" size={24} color="#ffffff" />
+            <Ionicons name="log-out-outline" size={20} color="#ffffff" />
+            <Text style={styles.logoutText}>Salir</Text>
           </TouchableOpacity>
         </View>
+
+        {/* Referral Code Card */}
+        <Card variant="elevated" style={styles.referralCard}>
+          <View style={styles.referralHeader}>
+            <Ionicons name="link" size={20} color="#7c3aed" />
+            <Text style={styles.referralTitle}>Tu Código de Referencia</Text>
+          </View>
+          <View style={styles.referralCodeContainer}>
+            <Text style={styles.referralCode}>{referralCode}</Text>
+            <TouchableOpacity style={styles.copyButton} onPress={copyReferralCode}>
+              <Ionicons name="copy-outline" size={18} color="#7c3aed" />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.referralHint}>
+            Comparte este código con tus clientes para ganar comisiones
+          </Text>
+        </Card>
       </LinearGradient>
 
       <ScrollView
@@ -333,27 +368,86 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.light.background,
   },
   header: {
-    padding: Spacing.xl,
-    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
-    paddingBottom: Spacing.lg,
+    paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl + 10,
+    paddingHorizontal: Spacing.base,
+    paddingBottom: Spacing.xl,
   },
-  headerContent: {
+  headerTop: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    marginBottom: Spacing.lg,
   },
-  headerTextContainer: {
+  headerLeft: {
     flex: 1,
   },
   headerTitle: {
-    fontSize: Typography.fontSize.xxxl,
+    fontSize: Typography.fontSize.xxl,
     fontWeight: Typography.fontWeight.bold,
     color: '#ffffff',
-    marginBottom: Spacing.xs,
+    marginBottom: Spacing.xs / 2,
   },
   headerSubtitle: {
-    fontSize: Typography.fontSize.base,
+    fontSize: Typography.fontSize.sm,
     color: 'rgba(255, 255, 255, 0.9)',
+  },
+  logoutButtonHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    paddingVertical: Spacing.xs,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  logoutText: {
+    fontSize: Typography.fontSize.sm,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#ffffff',
+  },
+  referralCard: {
+    backgroundColor: '#ffffff',
+    padding: Spacing.base,
+    marginHorizontal: 0,
+  },
+  referralHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    marginBottom: Spacing.sm,
+  },
+  referralTitle: {
+    fontSize: Typography.fontSize.sm,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#4b5563',
+  },
+  referralCodeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#f9fafb',
+    padding: Spacing.md,
+    borderRadius: BorderRadius.md,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    borderStyle: 'dashed',
+    marginBottom: Spacing.sm,
+  },
+  referralCode: {
+    fontSize: Typography.fontSize.xl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#7c3aed',
+    letterSpacing: 1,
+  },
+  copyButton: {
+    padding: Spacing.xs,
+    backgroundColor: '#ede9fe',
+    borderRadius: BorderRadius.md,
+  },
+  referralHint: {
+    fontSize: Typography.fontSize.xs,
+    color: '#6b7280',
+    textAlign: 'center',
   },
   logoutButton: {
     padding: Spacing.sm,
