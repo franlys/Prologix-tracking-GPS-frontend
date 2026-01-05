@@ -8,6 +8,7 @@ import {
   Platform,
   Alert,
   TextInput,
+  Linking,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,6 +25,7 @@ interface Device {
   imei: string;
   phoneNumber?: string;
   model?: string;
+  type?: string; // Para detectar el modelo del GPS
 }
 
 interface SMSCommand {
@@ -35,9 +37,11 @@ interface SMSCommand {
   icon: keyof typeof Ionicons.glyphMap;
   requiresParams?: boolean;
   placeholder?: string;
+  compatibleModels: string[]; // Protocolos/modelos compatibles
 }
 
-// Comandos SMS comunes para dispositivos GPS (GT06, TK103, etc.)
+// Comandos SMS comunes para dispositivos GPS
+// Compatible models: GT06, TK103, TK102, H02, GPS103, etc.
 const SMS_COMMANDS: SMSCommand[] = [
   // Rastreo y Ubicación
   {
@@ -47,6 +51,7 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'LOCATE#',
     category: 'tracking',
     icon: 'location',
+    compatibleModels: ['GT06', 'TK103', 'TK102', 'H02', 'GPS103', 'all'],
   },
   {
     id: 'google-maps',
@@ -55,6 +60,7 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'URL#',
     category: 'tracking',
     icon: 'map',
+    compatibleModels: ['GT06', 'TK103', 'all'],
   },
   {
     id: 'check-status',
@@ -63,6 +69,16 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'STATUS#',
     category: 'tracking',
     icon: 'information-circle',
+    compatibleModels: ['GT06', 'TK103', 'TK102', 'all'],
+  },
+  {
+    id: 'check-version',
+    name: 'Versión del Firmware',
+    description: 'Consulta la versión del software del GPS',
+    command: 'VERSION#',
+    category: 'tracking',
+    icon: 'code',
+    compatibleModels: ['GT06', 'TK103', 'all'],
   },
 
   // Control del Vehículo
@@ -73,6 +89,7 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'STOP#',
     category: 'control',
     icon: 'stop-circle',
+    compatibleModels: ['GT06', 'TK103', 'TK102', 'all'],
   },
   {
     id: 'restore-engine',
@@ -81,6 +98,25 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'RESUME#',
     category: 'control',
     icon: 'play-circle',
+    compatibleModels: ['GT06', 'TK103', 'TK102', 'all'],
+  },
+  {
+    id: 'arm',
+    name: 'Armar Sistema',
+    description: 'Activa el sistema de alarma del GPS',
+    command: 'ARM#',
+    category: 'control',
+    icon: 'shield-checkmark',
+    compatibleModels: ['GT06', 'TK103', 'all'],
+  },
+  {
+    id: 'disarm',
+    name: 'Desarmar Sistema',
+    description: 'Desactiva el sistema de alarma del GPS',
+    command: 'DISARM#',
+    category: 'control',
+    icon: 'shield-outline',
+    compatibleModels: ['GT06', 'TK103', 'all'],
   },
 
   // Configuración
@@ -93,6 +129,7 @@ const SMS_COMMANDS: SMSCommand[] = [
     icon: 'cellular',
     requiresParams: true,
     placeholder: 'internet.telco.do',
+    compatibleModels: ['GT06', 'TK103', 'TK102', 'H02', 'all'],
   },
   {
     id: 'set-admin',
@@ -103,6 +140,7 @@ const SMS_COMMANDS: SMSCommand[] = [
     icon: 'person',
     requiresParams: true,
     placeholder: '8091234567',
+    compatibleModels: ['GT06', 'TK103', 'all'],
   },
   {
     id: 'set-timezone',
@@ -111,6 +149,18 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'TIMEZONE#E#4#',
     category: 'config',
     icon: 'time',
+    compatibleModels: ['GT06', 'all'],
+  },
+  {
+    id: 'set-interval',
+    name: 'Intervalo de Reporte',
+    description: 'Configura cada cuántos segundos envía ubicación',
+    command: 'TIMER#',
+    category: 'config',
+    icon: 'timer',
+    requiresParams: true,
+    placeholder: '30 (segundos)',
+    compatibleModels: ['GT06', 'TK103', 'all'],
   },
 
   // Seguridad
@@ -119,10 +169,11 @@ const SMS_COMMANDS: SMSCommand[] = [
     name: 'Número SOS',
     description: 'Configura número de emergencia',
     command: 'SOS#',
-    category: 'config',
+    category: 'security',
     icon: 'warning',
     requiresParams: true,
     placeholder: '8091234567',
+    compatibleModels: ['GT06', 'TK103', 'TK102', 'all'],
   },
   {
     id: 'reset',
@@ -131,6 +182,7 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'FACTORY#',
     category: 'security',
     icon: 'refresh',
+    compatibleModels: ['GT06', 'TK103', 'all'],
   },
   {
     id: 'reboot',
@@ -139,6 +191,7 @@ const SMS_COMMANDS: SMSCommand[] = [
     command: 'RESET#',
     category: 'security',
     icon: 'power',
+    compatibleModels: ['GT06', 'TK103', 'TK102', 'H02', 'all'],
   },
 ];
 
@@ -189,43 +242,47 @@ export default function DeviceCommandsScreen() {
       return;
     }
 
-    if (!selectedDevice.phoneNumber) {
-      showAlert('Error', 'Este dispositivo no tiene número de teléfono configurado');
-      return;
-    }
+    // Obtener número de teléfono del GPS
+    // TODO: Este número debería venir del dispositivo configurado
+    const devicePhone = selectedDevice.phoneNumber || '+18091234567';
 
     let finalCommand = command.command;
     if (params) {
-      finalCommand = `${command.command}${params}#`;
+      finalCommand = finalCommand.replace('#', params + '#');
     }
 
+    // Abrir app de mensajería nativa con el mensaje pre-cargado
+    const smsUrl = Platform.select({
+      ios: `sms:${devicePhone}&body=${encodeURIComponent(finalCommand)}`,
+      android: `sms:${devicePhone}?body=${encodeURIComponent(finalCommand)}`,
+      default: `sms:${devicePhone}?body=${encodeURIComponent(finalCommand)}`,
+    });
+
     Alert.alert(
-      'Confirmar Comando',
-      `¿Enviar "${finalCommand}" a ${selectedDevice.name}?\n\nNúmero: ${selectedDevice.phoneNumber}`,
+      'Enviar Comando SMS',
+      `${command.name}\n\nComando: ${finalCommand}\nGPS: ${selectedDevice.name}\nNúmero: ${devicePhone}\n\n¿Abrir la aplicación de mensajería?`,
       [
         { text: 'Cancelar', style: 'cancel' },
         {
-          text: 'Enviar',
+          text: 'Abrir Mensajería',
           onPress: async () => {
             try {
-              setLoading(true);
-              // Aquí podrías integrar con un servicio de SMS o enviar por la API
-              await api.post(`/devices/${selectedDevice.id}/sms`, {
-                command: finalCommand,
-              });
-              showAlert(
-                '✓ Comando Enviado',
-                `El comando ha sido enviado a ${selectedDevice.name}\n\nRecibirás una respuesta por SMS.`
-              );
-              setCommandParams({});
+              const supported = await Linking.canOpenURL(smsUrl!);
+              if (supported) {
+                await Linking.openURL(smsUrl!);
+                setCommandParams({});
+              } else {
+                showAlert(
+                  'Error',
+                  'No se puede abrir la aplicación de mensajería en este dispositivo'
+                );
+              }
             } catch (error: any) {
-              console.error('Error sending SMS:', error);
+              console.error('Error opening SMS app:', error);
               showAlert(
                 'Error',
-                error.response?.data?.message || 'No se pudo enviar el comando SMS'
+                'No se pudo abrir la aplicación de mensajería'
               );
-            } finally {
-              setLoading(false);
             }
           },
         },
@@ -246,14 +303,48 @@ export default function DeviceCommandsScreen() {
       command: customCommand,
       category: 'config',
       icon: 'code',
+      compatibleModels: ['all'],
     });
   };
 
+  const getDeviceModel = () => {
+    if (!selectedDevice) return 'all';
+
+    // Detectar modelo basado en el tipo o IMEI del dispositivo
+    const deviceType = selectedDevice.type?.toUpperCase() || '';
+    const imei = selectedDevice.imei || '';
+
+    // Mapeo de tipos/protocolos a modelos
+    if (deviceType.includes('GT06') || deviceType.includes('GT06N')) return 'GT06';
+    if (deviceType.includes('TK103') || deviceType.includes('TK103B')) return 'TK103';
+    if (deviceType.includes('TK102')) return 'TK102';
+    if (deviceType.includes('H02')) return 'H02';
+    if (deviceType.includes('GPS103')) return 'GPS103';
+
+    // Si no se puede detectar, mostrar todos los comandos
+    return 'all';
+  };
+
   const getFilteredCommands = () => {
-    if (selectedCategory === 'all') {
-      return SMS_COMMANDS;
+    const deviceModel = getDeviceModel();
+
+    let filtered = SMS_COMMANDS;
+
+    // Filtrar por compatibilidad de modelo
+    if (deviceModel !== 'all') {
+      filtered = filtered.filter(
+        (cmd) =>
+          cmd.compatibleModels.includes(deviceModel) ||
+          cmd.compatibleModels.includes('all')
+      );
     }
-    return SMS_COMMANDS.filter((cmd) => cmd.category === selectedCategory);
+
+    // Filtrar por categoría
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter((cmd) => cmd.category === selectedCategory);
+    }
+
+    return filtered;
   };
 
   const getCategoryColor = (category: string) => {
@@ -322,6 +413,19 @@ export default function DeviceCommandsScreen() {
               </TouchableOpacity>
             ))}
           </ScrollView>
+
+          {/* GPS Model Indicator */}
+          {selectedDevice && (
+            <View style={styles.modelIndicator}>
+              <Ionicons name="information-circle" size={14} color="#6b7280" />
+              <Text style={styles.modelIndicatorText}>
+                Modelo detectado: <Text style={styles.modelIndicatorValue}>{getDeviceModel()}</Text>
+              </Text>
+              <Text style={styles.modelIndicatorHint}>
+                ({getFilteredCommands().length} comandos compatibles)
+              </Text>
+            </View>
+          )}
         </Card>
 
         {/* Category Filter */}
@@ -680,5 +784,29 @@ const styles = StyleSheet.create({
     fontSize: Typography.fontSize.sm,
     color: '#92400e',
     lineHeight: 20,
+  },
+  modelIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f0f9ff',
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    marginTop: Spacing.sm,
+    gap: Spacing.xs,
+    flexWrap: 'wrap',
+  },
+  modelIndicatorText: {
+    fontSize: Typography.fontSize.xs,
+    color: '#6b7280',
+  },
+  modelIndicatorValue: {
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#3b82f6',
+    textTransform: 'uppercase',
+  },
+  modelIndicatorHint: {
+    fontSize: Typography.fontSize.xs,
+    color: '#9ca3af',
+    fontStyle: 'italic',
   },
 });
