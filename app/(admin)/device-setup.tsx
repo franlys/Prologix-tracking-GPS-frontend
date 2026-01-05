@@ -24,6 +24,8 @@ interface GPSModel {
   port: number;
   description: string;
   icon: keyof typeof Ionicons.glyphMap;
+  category: 'vehicle' | 'personal' | 'asset' | 'fleet';
+  features: string[]; // relay, audio, waterproof, magnet, battery, 4g, obd, sos
 }
 
 const GPS_MODELS: GPSModel[] = [
@@ -35,6 +37,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Imán - Batería larga duración',
     icon: 'magnet',
+    category: 'vehicle',
+    features: ['magnet', 'battery', 'waterproof'],
   },
   {
     id: 'tk915',
@@ -337,6 +341,8 @@ export default function DeviceSetupScreen() {
   const [imei, setImei] = useState('');
   const [selectedModel, setSelectedModel] = useState<GPSModel | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([]);
 
   // Step 2: SMS Commands (generated)
   const [smsCommands, setSmsCommands] = useState<
@@ -354,6 +360,39 @@ export default function DeviceSetupScreen() {
       alert(`${title}\n\n${message}`);
     } else {
       Alert.alert(title, message);
+    }
+  };
+
+  // Filter models based on search, category, and features
+  const getFilteredModels = () => {
+    return GPS_MODELS.filter((model) => {
+      // Search filter
+      const matchesSearch =
+        model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        model.protocol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        model.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+      // Category filter (skip if has category property, otherwise show)
+      const matchesCategory =
+        selectedCategory === 'all' ||
+        !model.category ||
+        model.category === selectedCategory;
+
+      // Features filter (skip if has features property, otherwise show)
+      const matchesFeatures =
+        selectedFeatures.length === 0 ||
+        !model.features ||
+        selectedFeatures.every((feature) => model.features?.includes(feature));
+
+      return matchesSearch && matchesCategory && matchesFeatures;
+    });
+  };
+
+  const toggleFeature = (feature: string) => {
+    if (selectedFeatures.includes(feature)) {
+      setSelectedFeatures(selectedFeatures.filter((f) => f !== feature));
+    } else {
+      setSelectedFeatures([...selectedFeatures, feature]);
     }
   };
 
@@ -575,13 +614,139 @@ export default function DeviceSetupScreen() {
               )}
             </View>
 
+            {/* Category Filter */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterLabel}>Categoría:</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterChipsContainer}>
+                <TouchableOpacity
+                  style={[styles.filterChip, selectedCategory === 'all' && styles.filterChipActive]}
+                  onPress={() => setSelectedCategory('all')}
+                >
+                  <Text style={[styles.filterChipText, selectedCategory === 'all' && styles.filterChipTextActive]}>
+                    Todos
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.filterChip, selectedCategory === 'vehicle' && styles.filterChipActive]}
+                  onPress={() => setSelectedCategory('vehicle')}
+                >
+                  <Ionicons name="car" size={16} color={selectedCategory === 'vehicle' ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.filterChipText, selectedCategory === 'vehicle' && styles.filterChipTextActive]}>
+                    Vehículos
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.filterChip, selectedCategory === 'personal' && styles.filterChipActive]}
+                  onPress={() => setSelectedCategory('personal')}
+                >
+                  <Ionicons name="person" size={16} color={selectedCategory === 'personal' ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.filterChipText, selectedCategory === 'personal' && styles.filterChipTextActive]}>
+                    Personal
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.filterChip, selectedCategory === 'asset' && styles.filterChipActive]}
+                  onPress={() => setSelectedCategory('asset')}
+                >
+                  <Ionicons name="cube" size={16} color={selectedCategory === 'asset' ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.filterChipText, selectedCategory === 'asset' && styles.filterChipTextActive]}>
+                    Assets
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.filterChip, selectedCategory === 'fleet' && styles.filterChipActive]}
+                  onPress={() => setSelectedCategory('fleet')}
+                >
+                  <Ionicons name="bus" size={16} color={selectedCategory === 'fleet' ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.filterChipText, selectedCategory === 'fleet' && styles.filterChipTextActive]}>
+                    Flotas
+                  </Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+
+            {/* Features Filter */}
+            <View style={styles.filterSection}>
+              <Text style={styles.filterLabel}>Características:</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterChipsContainer}>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('4g') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('4g')}
+                >
+                  <Ionicons name="cellular" size={14} color={selectedFeatures.includes('4g') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('4g') && styles.featureChipTextActive]}>
+                    4G/LTE
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('relay') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('relay')}
+                >
+                  <Ionicons name="flash" size={14} color={selectedFeatures.includes('relay') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('relay') && styles.featureChipTextActive]}>
+                    Relay
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('audio') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('audio')}
+                >
+                  <Ionicons name="mic" size={14} color={selectedFeatures.includes('audio') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('audio') && styles.featureChipTextActive]}>
+                    Audio
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('waterproof') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('waterproof')}
+                >
+                  <Ionicons name="water" size={14} color={selectedFeatures.includes('waterproof') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('waterproof') && styles.featureChipTextActive]}>
+                    Agua
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('battery') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('battery')}
+                >
+                  <Ionicons name="battery-charging" size={14} color={selectedFeatures.includes('battery') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('battery') && styles.featureChipTextActive]}>
+                    Batería
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('magnet') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('magnet')}
+                >
+                  <Ionicons name="magnet" size={14} color={selectedFeatures.includes('magnet') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('magnet') && styles.featureChipTextActive]}>
+                    Imán
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('obd') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('obd')}
+                >
+                  <Ionicons name="construct" size={14} color={selectedFeatures.includes('obd') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('obd') && styles.featureChipTextActive]}>
+                    OBD
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.featureChip, selectedFeatures.includes('sos') && styles.featureChipActive]}
+                  onPress={() => toggleFeature('sos')}
+                >
+                  <Ionicons name="alert-circle" size={14} color={selectedFeatures.includes('sos') ? '#ffffff' : '#6b7280'} />
+                  <Text style={[styles.featureChipText, selectedFeatures.includes('sos') && styles.featureChipTextActive]}>
+                    SOS
+                  </Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </View>
+
             {/* Results Count */}
             <Text style={styles.resultsCount}>
-              {GPS_MODELS.filter((model) =>
-                model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                model.protocol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                model.description.toLowerCase().includes(searchQuery.toLowerCase())
-              ).length} modelos encontrados
+              {getFilteredModels().length} modelos encontrados
             </Text>
 
             {/* Model List - Scrollable */}
@@ -590,13 +755,7 @@ export default function DeviceSetupScreen() {
               nestedScrollEnabled={true}
               showsVerticalScrollIndicator={true}
             >
-              {GPS_MODELS
-                .filter((model) =>
-                  model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  model.protocol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  model.description.toLowerCase().includes(searchQuery.toLowerCase())
-                )
-                .map((model) => (
+              {getFilteredModels().map((model) => (
                   <TouchableOpacity
                     key={model.id}
                     style={[
@@ -626,11 +785,7 @@ export default function DeviceSetupScreen() {
                   </TouchableOpacity>
                 ))}
 
-              {GPS_MODELS.filter((model) =>
-                model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                model.protocol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                model.description.toLowerCase().includes(searchQuery.toLowerCase())
-              ).length === 0 && (
+              {getFilteredModels().length === 0 && (
                 <View style={styles.noResultsContainer}>
                   <Ionicons name="search-outline" size={48} color="#d1d5db" />
                   <Text style={styles.noResultsText}>No se encontraron modelos</Text>
@@ -1178,5 +1333,65 @@ const styles = StyleSheet.create({
     color: '#9ca3af',
     marginTop: Spacing.xs,
     textAlign: 'center',
+  },
+  filterSection: {
+    marginBottom: Spacing.md,
+  },
+  filterLabel: {
+    fontSize: Typography.fontSize.sm,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#374151',
+    marginBottom: Spacing.sm,
+  },
+  filterChipsContainer: {
+    flexDirection: 'row',
+  },
+  filterChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    backgroundColor: '#f3f4f6',
+    borderRadius: BorderRadius.full,
+    marginRight: Spacing.sm,
+    gap: Spacing.xs / 2,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  filterChipActive: {
+    backgroundColor: '#3b82f6',
+    borderColor: '#3b82f6',
+  },
+  filterChipText: {
+    fontSize: Typography.fontSize.sm,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#6b7280',
+  },
+  filterChipTextActive: {
+    color: '#ffffff',
+  },
+  featureChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: Spacing.xs,
+    backgroundColor: '#f9fafb',
+    borderRadius: BorderRadius.md,
+    marginRight: Spacing.xs,
+    gap: Spacing.xs / 2,
+    borderWidth: 1.5,
+    borderColor: '#e5e7eb',
+  },
+  featureChipActive: {
+    backgroundColor: '#7c3aed',
+    borderColor: '#7c3aed',
+  },
+  featureChipText: {
+    fontSize: Typography.fontSize.xs,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#6b7280',
+  },
+  featureChipTextActive: {
+    color: '#ffffff',
   },
 });
