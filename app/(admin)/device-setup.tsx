@@ -47,6 +47,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: '4G - Batería 10,000mAh',
     icon: 'battery-charging',
+    category: 'vehicle',
+    features: ['4g', 'battery', 'magnet', 'waterproof'],
   },
   {
     id: 'tk806',
@@ -55,6 +57,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Relay corta corriente',
     icon: 'flash',
+    category: 'vehicle',
+    features: ['relay', 'audio'],
   },
   {
     id: 'tk909',
@@ -63,6 +67,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Vehículos - Instalación cableada',
     icon: 'car-sport',
+    category: 'vehicle',
+    features: ['relay', 'audio'],
   },
   {
     id: 'tk103',
@@ -71,6 +77,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5013,
     description: 'Económico - Relay corta corriente',
     icon: 'car',
+    category: 'vehicle',
+    features: ['relay'],
   },
   {
     id: 'tk935',
@@ -79,6 +87,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: '4G - Modelo 2025',
     icon: 'hardware-chip',
+    category: 'vehicle',
+    features: ['4g', 'relay'],
   },
   {
     id: 'tks1',
@@ -87,6 +97,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Mini - Portátil',
     icon: 'cube',
+    category: 'personal',
+    features: ['battery', 'sos'],
   },
   {
     id: 'tk901',
@@ -95,6 +107,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Personal - Mascotas',
     icon: 'paw',
+    category: 'personal',
+    features: ['battery', 'sos', 'waterproof'],
   },
   {
     id: 'tk913',
@@ -103,6 +117,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Vehículos pesados',
     icon: 'bus',
+    category: 'fleet',
+    features: ['relay', 'audio'],
   },
   {
     id: 'tk905b',
@@ -111,6 +127,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Versión mejorada TK905',
     icon: 'magnet',
+    category: 'vehicle',
+    features: ['magnet', 'battery', 'waterproof'],
   },
   {
     id: 'jtk905-4g',
@@ -119,6 +137,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: '4G - Imán fuerte',
     icon: 'magnet',
+    category: 'vehicle',
+    features: ['4g', 'magnet', 'battery', 'waterproof'],
   },
   {
     id: 'tk818',
@@ -127,6 +147,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Auto - Micrófono',
     icon: 'mic',
+    category: 'vehicle',
+    features: ['audio', 'relay'],
   },
   {
     id: 'tk911pro',
@@ -135,6 +157,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Profesional - Multi sensor',
     icon: 'business',
+    category: 'fleet',
+    features: ['4g', 'relay', 'audio'],
   },
   {
     id: 'tk919',
@@ -143,6 +167,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Vehículos - Cable OBD',
     icon: 'construct',
+    category: 'vehicle',
+    features: ['obd'],
   },
   {
     id: 'tk918',
@@ -151,6 +177,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Portátil - Botón SOS',
     icon: 'alert-circle',
+    category: 'personal',
+    features: ['battery', 'sos', 'waterproof'],
   },
   {
     id: 'tk905mini',
@@ -159,6 +187,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Mini - Ultra compacto',
     icon: 'cube-outline',
+    category: 'vehicle',
+    features: ['magnet', 'battery'],
   },
   {
     id: 'tks2',
@@ -167,6 +197,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Personal - Resistente al agua',
     icon: 'water',
+    category: 'personal',
+    features: ['battery', 'waterproof', 'sos'],
   },
   {
     id: 'tk720',
@@ -175,6 +207,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Auto - Audio bidireccional',
     icon: 'headset',
+    category: 'vehicle',
+    features: ['audio', 'relay'],
   },
 
   // CONCOX - Popular en República Dominicana
@@ -185,6 +219,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Popular en RD - SMS + GPRS',
     icon: 'hardware-chip',
+    category: 'vehicle',
+    features: ['relay'],
   },
   {
     id: 'gt06e',
@@ -193,6 +229,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: '4G LTE - Moderno',
     icon: 'cellular',
+    category: 'vehicle',
+    features: ['4g', 'relay'],
   },
   {
     id: 'gv500',
@@ -201,6 +239,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Flotas - Multi función',
     icon: 'apps',
+    category: 'fleet',
+    features: ['4g', 'relay', 'audio'],
   },
 
   // COBAN
@@ -211,6 +251,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5013,
     description: 'Mejorado - Relay + Micrófono',
     icon: 'car-sport',
+    category: 'vehicle',
+    features: ['relay', 'audio'],
   },
   {
     id: 'gps303',
@@ -219,6 +261,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5001,
     description: 'Clásico - Muy usado en RD',
     icon: 'navigate',
+    category: 'vehicle',
+    features: ['relay'],
   },
   {
     id: 'tk303',
@@ -227,6 +271,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5013,
     description: 'Económico - Básico',
     icon: 'location',
+    category: 'vehicle',
+    features: [],
   },
 
   // TELTONIKA - Profesional
@@ -237,6 +283,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5027,
     description: 'Profesional - CAN bus',
     icon: 'business',
+    category: 'fleet',
+    features: ['4g', 'obd'],
   },
   {
     id: 'fmb920',
@@ -245,6 +293,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5027,
     description: 'Profesional - GNSS + BT',
     icon: 'business',
+    category: 'fleet',
+    features: ['4g', 'obd'],
   },
   {
     id: 'fmb640',
@@ -253,6 +303,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5027,
     description: 'Avanzado - Dual SIM',
     icon: 'shield-checkmark',
+    category: 'fleet',
+    features: ['4g', 'obd'],
   },
 
   // QUECLINK
@@ -263,6 +315,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5025,
     description: 'Personal - Batería larga',
     icon: 'person',
+    category: 'personal',
+    features: ['battery', 'sos'],
   },
   {
     id: 'gv500',
@@ -271,6 +325,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5025,
     description: 'Vehículos - 3G/4G',
     icon: 'car',
+    category: 'vehicle',
+    features: ['4g'],
   },
   {
     id: 'gl520',
@@ -279,6 +335,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5025,
     description: 'Assets - Contenedores',
     icon: 'cube',
+    category: 'asset',
+    features: ['battery', 'waterproof'],
   },
 
   // OTROS POPULARES
@@ -289,6 +347,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5011,
     description: 'Flotas - Confiable',
     icon: 'speedometer',
+    category: 'fleet',
+    features: ['4g'],
   },
   {
     id: 'h02',
@@ -297,6 +357,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5013,
     description: 'Básico - Compatible muchas marcas',
     icon: 'location',
+    category: 'vehicle',
+    features: [],
   },
   {
     id: 'pt502',
@@ -305,6 +367,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5001,
     description: 'Personal - Portátil',
     icon: 'walk',
+    category: 'personal',
+    features: ['battery', 'sos'],
   },
   {
     id: 'gt02',
@@ -313,6 +377,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Genérico - Multi marca',
     icon: 'hardware-chip',
+    category: 'vehicle',
+    features: [],
   },
   {
     id: 'a8',
@@ -321,6 +387,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'Mini - Espionaje/Personal',
     icon: 'eye',
+    category: 'personal',
+    features: ['battery'],
   },
   {
     id: 'tr06',
@@ -329,6 +397,8 @@ const GPS_MODELS: GPSModel[] = [
     port: 5023,
     description: 'OBD II - Plug and play',
     icon: 'plug',
+    category: 'vehicle',
+    features: ['obd'],
   },
 ];
 
