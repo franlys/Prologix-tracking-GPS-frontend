@@ -27,6 +27,153 @@ interface GPSModel {
 }
 
 const GPS_MODELS: GPSModel[] = [
+  // TKSTAR - Modelos más populares
+  {
+    id: 'tk905',
+    name: 'TKSTAR TK905',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Imán - Batería larga duración',
+    icon: 'magnet',
+  },
+  {
+    id: 'tk915',
+    name: 'TKSTAR TK915',
+    protocol: 'GT06',
+    port: 5023,
+    description: '4G - Batería 10,000mAh',
+    icon: 'battery-charging',
+  },
+  {
+    id: 'tk806',
+    name: 'TKSTAR TK806',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Relay corta corriente',
+    icon: 'flash',
+  },
+  {
+    id: 'tk909',
+    name: 'TKSTAR TK909',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Vehículos - Instalación cableada',
+    icon: 'car-sport',
+  },
+  {
+    id: 'tk103',
+    name: 'TKSTAR TK103',
+    protocol: 'TK103',
+    port: 5013,
+    description: 'Económico - Relay corta corriente',
+    icon: 'car',
+  },
+  {
+    id: 'tk935',
+    name: 'TKSTAR TK935',
+    protocol: 'GT06',
+    port: 5023,
+    description: '4G - Modelo 2025',
+    icon: 'hardware-chip',
+  },
+  {
+    id: 'tks1',
+    name: 'TKSTAR TKS1',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Mini - Portátil',
+    icon: 'cube',
+  },
+  {
+    id: 'tk901',
+    name: 'TKSTAR TK901',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Personal - Mascotas',
+    icon: 'paw',
+  },
+  {
+    id: 'tk913',
+    name: 'TKSTAR TK913',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Vehículos pesados',
+    icon: 'bus',
+  },
+  {
+    id: 'tk905b',
+    name: 'TKSTAR TK905B',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Versión mejorada TK905',
+    icon: 'magnet',
+  },
+  {
+    id: 'jtk905-4g',
+    name: 'TKSTAR JTK905-4G',
+    protocol: 'GT06',
+    port: 5023,
+    description: '4G - Imán fuerte',
+    icon: 'magnet',
+  },
+  {
+    id: 'tk818',
+    name: 'TKSTAR TK818',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Auto - Micrófono',
+    icon: 'mic',
+  },
+  {
+    id: 'tk911pro',
+    name: 'TKSTAR TK911PRO',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Profesional - Multi sensor',
+    icon: 'business',
+  },
+  {
+    id: 'tk919',
+    name: 'TKSTAR TK919',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Vehículos - Cable OBD',
+    icon: 'construct',
+  },
+  {
+    id: 'tk918',
+    name: 'TKSTAR TK918',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Portátil - Botón SOS',
+    icon: 'alert-circle',
+  },
+  {
+    id: 'tk905mini',
+    name: 'TKSTAR TK905MINI',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Mini - Ultra compacto',
+    icon: 'cube-outline',
+  },
+  {
+    id: 'tks2',
+    name: 'TKSTAR TKS2',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Personal - Resistente al agua',
+    icon: 'water',
+  },
+  {
+    id: 'tk720',
+    name: 'TKSTAR TK720',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Auto - Audio bidireccional',
+    icon: 'headset',
+  },
+
+  // CONCOX - Popular en República Dominicana
   {
     id: 'gt06n',
     name: 'Concox GT06N',
@@ -36,13 +183,49 @@ const GPS_MODELS: GPSModel[] = [
     icon: 'hardware-chip',
   },
   {
-    id: 'tk103',
-    name: 'Coban TK103',
+    id: 'gt06e',
+    name: 'Concox GT06E',
+    protocol: 'GT06',
+    port: 5023,
+    description: '4G LTE - Moderno',
+    icon: 'cellular',
+  },
+  {
+    id: 'gv500',
+    name: 'Concox GV500',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Flotas - Multi función',
+    icon: 'apps',
+  },
+
+  // COBAN
+  {
+    id: 'tk103b',
+    name: 'Coban TK103B',
     protocol: 'TK103',
     port: 5013,
-    description: 'Económico - Relay corta corriente',
+    description: 'Mejorado - Relay + Micrófono',
     icon: 'car-sport',
   },
+  {
+    id: 'gps303',
+    name: 'Coban GPS303',
+    protocol: 'GPS103',
+    port: 5001,
+    description: 'Clásico - Muy usado en RD',
+    icon: 'navigate',
+  },
+  {
+    id: 'tk303',
+    name: 'Coban TK303',
+    protocol: 'TK103',
+    port: 5013,
+    description: 'Económico - Básico',
+    icon: 'location',
+  },
+
+  // TELTONIKA - Profesional
   {
     id: 'fmb120',
     name: 'Teltonika FMB120',
@@ -52,12 +235,96 @@ const GPS_MODELS: GPSModel[] = [
     icon: 'business',
   },
   {
+    id: 'fmb920',
+    name: 'Teltonika FMB920',
+    protocol: 'Teltonika',
+    port: 5027,
+    description: 'Profesional - GNSS + BT',
+    icon: 'business',
+  },
+  {
+    id: 'fmb640',
+    name: 'Teltonika FMB640',
+    protocol: 'Teltonika',
+    port: 5027,
+    description: 'Avanzado - Dual SIM',
+    icon: 'shield-checkmark',
+  },
+
+  // QUECLINK
+  {
+    id: 'gl300',
+    name: 'Queclink GL300',
+    protocol: 'GL200',
+    port: 5025,
+    description: 'Personal - Batería larga',
+    icon: 'person',
+  },
+  {
+    id: 'gv500',
+    name: 'Queclink GV500',
+    protocol: 'GL200',
+    port: 5025,
+    description: 'Vehículos - 3G/4G',
+    icon: 'car',
+  },
+  {
+    id: 'gl520',
+    name: 'Queclink GL520',
+    protocol: 'GL200',
+    port: 5025,
+    description: 'Assets - Contenedores',
+    icon: 'cube',
+  },
+
+  // OTROS POPULARES
+  {
+    id: 'st901',
+    name: 'Suntech ST901',
+    protocol: 'ST210',
+    port: 5011,
+    description: 'Flotas - Confiable',
+    icon: 'speedometer',
+  },
+  {
     id: 'h02',
     name: 'H02 Genérico',
     protocol: 'H02',
     port: 5013,
-    description: 'Básico - Compatible',
+    description: 'Básico - Compatible muchas marcas',
     icon: 'location',
+  },
+  {
+    id: 'pt502',
+    name: 'Xexun PT502',
+    protocol: 'PT502',
+    port: 5001,
+    description: 'Personal - Portátil',
+    icon: 'walk',
+  },
+  {
+    id: 'gt02',
+    name: 'GT02 Generic',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Genérico - Multi marca',
+    icon: 'hardware-chip',
+  },
+  {
+    id: 'a8',
+    name: 'Mini A8',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'Mini - Espionaje/Personal',
+    icon: 'eye',
+  },
+  {
+    id: 'tr06',
+    name: 'TR06',
+    protocol: 'GT06',
+    port: 5023,
+    description: 'OBD II - Plug and play',
+    icon: 'plug',
   },
 ];
 
@@ -69,6 +336,7 @@ export default function DeviceSetupScreen() {
   const [deviceName, setDeviceName] = useState('');
   const [imei, setImei] = useState('');
   const [selectedModel, setSelectedModel] = useState<GPSModel | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Step 2: SMS Commands (generated)
   const [smsCommands, setSmsCommands] = useState<
@@ -289,35 +557,89 @@ export default function DeviceSetupScreen() {
             </View>
 
             <Text style={styles.label}>Modelo del GPS</Text>
-            {GPS_MODELS.map((model) => (
-              <TouchableOpacity
-                key={model.id}
-                style={[
-                  styles.modelCard,
-                  selectedModel?.id === model.id && styles.modelCardSelected,
-                ]}
-                onPress={() => setSelectedModel(model)}
-              >
-                <View style={styles.modelIcon}>
-                  <Ionicons
-                    name={model.icon}
-                    size={24}
-                    color={selectedModel?.id === model.id ? '#3b82f6' : '#6b7280'}
-                  />
+
+            {/* Search Bar */}
+            <View style={styles.searchContainer}>
+              <Ionicons name="search" size={20} color="#6b7280" style={styles.searchIcon} />
+              <TextInput
+                style={styles.searchInput}
+                placeholder="Buscar por modelo, marca o protocolo..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholderTextColor="#9ca3af"
+              />
+              {searchQuery.length > 0 && (
+                <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
+                  <Ionicons name="close-circle" size={20} color="#9ca3af" />
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* Results Count */}
+            <Text style={styles.resultsCount}>
+              {GPS_MODELS.filter((model) =>
+                model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                model.protocol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                model.description.toLowerCase().includes(searchQuery.toLowerCase())
+              ).length} modelos encontrados
+            </Text>
+
+            {/* Model List - Scrollable */}
+            <ScrollView
+              style={styles.modelsScrollView}
+              nestedScrollEnabled={true}
+              showsVerticalScrollIndicator={true}
+            >
+              {GPS_MODELS
+                .filter((model) =>
+                  model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  model.protocol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  model.description.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((model) => (
+                  <TouchableOpacity
+                    key={model.id}
+                    style={[
+                      styles.modelCard,
+                      selectedModel?.id === model.id && styles.modelCardSelected,
+                    ]}
+                    onPress={() => setSelectedModel(model)}
+                  >
+                    <View style={styles.modelIcon}>
+                      <Ionicons
+                        name={model.icon}
+                        size={24}
+                        color={selectedModel?.id === model.id ? '#3b82f6' : '#6b7280'}
+                      />
+                    </View>
+                    <View style={styles.modelInfo}>
+                      <Text style={styles.modelName}>{model.name}</Text>
+                      <Text style={styles.modelDescription}>{model.description}</Text>
+                      <View style={styles.modelMeta}>
+                        <Badge label={model.protocol} variant="neutral" size="sm" />
+                        <Text style={styles.modelPort}>Puerto {model.port}</Text>
+                      </View>
+                    </View>
+                    {selectedModel?.id === model.id && (
+                      <Ionicons name="checkmark-circle" size={24} color="#3b82f6" />
+                    )}
+                  </TouchableOpacity>
+                ))}
+
+              {GPS_MODELS.filter((model) =>
+                model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                model.protocol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                model.description.toLowerCase().includes(searchQuery.toLowerCase())
+              ).length === 0 && (
+                <View style={styles.noResultsContainer}>
+                  <Ionicons name="search-outline" size={48} color="#d1d5db" />
+                  <Text style={styles.noResultsText}>No se encontraron modelos</Text>
+                  <Text style={styles.noResultsSubtext}>
+                    Intenta buscar por otra marca o modelo
+                  </Text>
                 </View>
-                <View style={styles.modelInfo}>
-                  <Text style={styles.modelName}>{model.name}</Text>
-                  <Text style={styles.modelDescription}>{model.description}</Text>
-                  <View style={styles.modelMeta}>
-                    <Badge label={model.protocol} variant="neutral" size="sm" />
-                    <Text style={styles.modelPort}>Puerto {model.port}</Text>
-                  </View>
-                </View>
-                {selectedModel?.id === model.id && (
-                  <Ionicons name="checkmark-circle" size={24} color="#3b82f6" />
-                )}
-              </TouchableOpacity>
-            ))}
+              )}
+            </ScrollView>
 
             <Button
               title="Continuar"
@@ -805,5 +1127,56 @@ const styles = StyleSheet.create({
   },
   finishButton: {
     marginBottom: Spacing.xl,
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#ffffff',
+    borderWidth: 2,
+    borderColor: '#3b82f6',
+    borderRadius: BorderRadius.md,
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.md,
+  },
+  searchIcon: {
+    marginRight: Spacing.sm,
+  },
+  searchInput: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    fontSize: Typography.fontSize.base,
+    color: '#1f2937',
+  },
+  clearButton: {
+    padding: Spacing.xs,
+  },
+  resultsCount: {
+    fontSize: Typography.fontSize.sm,
+    color: '#6b7280',
+    marginBottom: Spacing.md,
+    fontWeight: Typography.fontWeight.semibold,
+  },
+  modelsScrollView: {
+    maxHeight: 400,
+    marginBottom: Spacing.md,
+  },
+  noResultsContainer: {
+    alignItems: 'center',
+    padding: Spacing.xxxl,
+    backgroundColor: '#f9fafb',
+    borderRadius: BorderRadius.md,
+    marginVertical: Spacing.lg,
+  },
+  noResultsText: {
+    fontSize: Typography.fontSize.base,
+    fontWeight: Typography.fontWeight.semibold,
+    color: '#6b7280',
+    marginTop: Spacing.md,
+  },
+  noResultsSubtext: {
+    fontSize: Typography.fontSize.sm,
+    color: '#9ca3af',
+    marginTop: Spacing.xs,
+    textAlign: 'center',
   },
 });
