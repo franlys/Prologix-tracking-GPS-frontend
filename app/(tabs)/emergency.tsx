@@ -453,10 +453,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderBottomWidth: 1,
     borderBottomColor: '#e5e7eb',
+    maxHeight: 60,
   },
   categoriesContent: {
     paddingHorizontal: Spacing.base,
-    paddingVertical: Spacing.md,
+    paddingVertical: Spacing.sm,
     flexDirection: 'row',
   },
   categoryChip: {
