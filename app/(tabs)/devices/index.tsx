@@ -2,6 +2,7 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity, RefreshControl, Pla
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
 import api from '../../../services/api';
 import { Colors, Spacing, BorderRadius, Typography, Shadows } from '../../../constants/Theme';
 import { Badge } from '../../../components/ui/Badge';
@@ -53,8 +54,19 @@ export default function DevicesScreen() {
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
             >
-                <Text style={styles.headerTitle}>Mis Dispositivos</Text>
-                <Text style={styles.headerSubtitle}>Gestiona tus dispositivos GPS</Text>
+                <View style={styles.headerContent}>
+                    <View>
+                        <Text style={styles.headerTitle}>Mis Dispositivos</Text>
+                        <Text style={styles.headerSubtitle}>Gestiona tus dispositivos GPS</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.commandsButton}
+                        onPress={() => router.push('/(tabs)/devices/commands' as any)}
+                    >
+                        <Ionicons name="chatbubbles" size={20} color="#ffffff" />
+                        <Text style={styles.commandsButtonText}>SMS</Text>
+                    </TouchableOpacity>
+                </View>
             </LinearGradient>
 
             <View style={styles.content}>
@@ -203,6 +215,11 @@ const styles = StyleSheet.create({
         paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
         paddingBottom: Spacing.lg,
     },
+    headerContent: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
     headerTitle: {
         fontSize: Typography.fontSize.xxxl,
         fontWeight: Typography.fontWeight.bold,
@@ -212,6 +229,22 @@ const styles = StyleSheet.create({
     headerSubtitle: {
         fontSize: Typography.fontSize.base,
         color: 'rgba(255, 255, 255, 0.9)',
+    },
+    commandsButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.xs,
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        paddingHorizontal: Spacing.md,
+        paddingVertical: Spacing.sm,
+        borderRadius: BorderRadius.full,
+        borderWidth: 1,
+        borderColor: 'rgba(255, 255, 255, 0.3)',
+    },
+    commandsButtonText: {
+        color: '#ffffff',
+        fontSize: Typography.fontSize.sm,
+        fontWeight: Typography.fontWeight.semibold,
     },
     content: {
         flex: 1,
