@@ -457,10 +457,12 @@ const styles = StyleSheet.create({
   categoriesContent: {
     paddingHorizontal: Spacing.base,
     paddingVertical: Spacing.md,
+    flexDirection: 'row',
   },
   categoryChip: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs + 2,
     backgroundColor: '#f3f4f6',
@@ -469,6 +471,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs / 2,
     borderWidth: 2,
     borderColor: 'transparent',
+    flexShrink: 0,
   },
   categoryChipActive: {
     backgroundColor: '#ffffff',
