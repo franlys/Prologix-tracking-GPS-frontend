@@ -11,12 +11,14 @@ import {
 } from 'react-native';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useSession } from '../../context/ctx';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography, Shadows } from '../../constants/Theme';
 import { Button } from '../../components/ui/Button';
 import { CompassLoader } from '../../components/ui/CompassLoader';
 
 export default function Register() {
+  const { signIn } = useSession();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -63,10 +65,15 @@ export default function Register() {
       setSuccess('¡Cuenta creada exitosamente! Iniciando sesión...');
 
       // Auto login after successful registration
-      await api.post('/auth/login', {
+      const loginResponse = await api.post('/auth/login', {
         email: formData.email,
         password: formData.password,
       });
+
+      const { accessToken, user } = loginResponse.data;
+
+      // Store session properly
+      signIn(accessToken, user);
 
       // Navigate to onboarding
       setTimeout(() => {
