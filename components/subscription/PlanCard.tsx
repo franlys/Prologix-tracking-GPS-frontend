@@ -102,8 +102,7 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, currentPlan, onSelect 
             <View key={index} style={styles.featureRow}>
               <Text style={styles.featureIcon}>{feature.included ? '✅' : '❌'}</Text>
               <Text style={[styles.featureText, !feature.included && styles.featureDisabled]}>
-                {feature.name}
-                {feature.value && ` (${feature.value})`}
+                {feature.name}{feature.value ? ` (${feature.value})` : ''}
               </Text>
             </View>
           ))}
