@@ -447,6 +447,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Spacing.xs,
     minHeight: 50,
+    width: '100%',
   },
   infoIcon: {
     width: 40,
@@ -456,11 +457,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flexShrink: 0,
+    marginRight: Spacing.md,
   },
   infoContent: {
-    marginLeft: Spacing.md,
     flex: 1,
-    flexShrink: 1,
   },
   infoLabel: {
     fontSize: Typography.fontSize.xs,
@@ -492,15 +492,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.md,
     minHeight: 32,
+    width: '100%',
   },
   stepNumber: {
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
     borderRadius: BorderRadius.full,
     backgroundColor: '#10b981',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: Spacing.sm,
+    marginRight: Spacing.md,
     flexShrink: 0,
   },
   stepNumberText: {
@@ -510,10 +511,10 @@ const styles = StyleSheet.create({
   },
   helpStepText: {
     flex: 1,
-    flexShrink: 1,
     fontSize: Typography.fontSize.sm,
     color: '#065f46',
     lineHeight: 20,
+    flexWrap: 'wrap',
   },
   footer: {
     alignItems: 'center',
