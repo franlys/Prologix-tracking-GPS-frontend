@@ -260,8 +260,8 @@ export default function SubscriptionScreen() {
             <Text
               style={[styles.toggleText, billingPeriod === 'YEARLY' && styles.toggleTextActive]}
             >
-              Anual
-              <Text style={styles.saveBadge}> (Ahorra 20%)</Text>
+              Anual{' '}
+              <Text style={styles.saveBadge}>(Ahorra 20%)</Text>
             </Text>
           </TouchableOpacity>
         </View>
