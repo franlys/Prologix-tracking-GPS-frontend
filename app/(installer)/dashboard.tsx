@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { useSession } from '../../context/ctx';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
@@ -40,9 +41,11 @@ interface Commission {
 
 export default function InstallerDashboardScreen() {
   const router = useRouter();
+  const { signOut } = useSession();
   const [stats, setStats] = useState<InstallerStats | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchStats();
@@ -51,10 +54,15 @@ export default function InstallerDashboardScreen() {
   const fetchStats = async () => {
     try {
       setLoading(true);
+      setError(null);
       const response = await api.get('/installers/me/stats');
       setStats(response.data);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching stats:', error);
+      const errorMessage = error.response?.status === 403
+        ? 'No tienes permisos para acceder a esta información. Contacta al administrador.'
+        : 'Error al cargar tus estadísticas. Por favor intenta de nuevo.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -89,10 +97,45 @@ export default function InstallerDashboardScreen() {
     return stats.commissions.slice(0, 5);
   };
 
-  if (loading || !stats) {
+  if (loading) {
     return (
       <View style={styles.container}>
         <Text style={styles.loadingText}>Cargando...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorIcon}>⚠️</Text>
+          <Text style={styles.errorTitle}>Error</Text>
+          <Text style={styles.errorMessage}>{error}</Text>
+          <Button
+            title="Reintentar"
+            onPress={fetchStats}
+            variant="primary"
+            style={styles.retryButton}
+          />
+          <Button
+            title="Cerrar Sesión"
+            onPress={() => {
+              signOut();
+              router.replace('/(auth)/login');
+            }}
+            variant="outline"
+            style={styles.logoutButton}
+          />
+        </View>
+      </View>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.loadingText}>No hay datos disponibles</Text>
       </View>
     );
   }
@@ -302,6 +345,36 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xxxl,
     fontSize: Typography.fontSize.lg,
     color: Colors.light.textSecondary,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xl,
+  },
+  errorIcon: {
+    fontSize: 64,
+    marginBottom: Spacing.base,
+  },
+  errorTitle: {
+    fontSize: Typography.fontSize.xxl,
+    fontWeight: Typography.fontWeight.bold,
+    color: '#dc2626',
+    marginBottom: Spacing.sm,
+  },
+  errorMessage: {
+    fontSize: Typography.fontSize.base,
+    color: Colors.light.textSecondary,
+    textAlign: 'center',
+    marginBottom: Spacing.xl,
+    paddingHorizontal: Spacing.lg,
+  },
+  retryButton: {
+    marginBottom: Spacing.md,
+    minWidth: 200,
+  },
+  logoutButton: {
+    minWidth: 200,
   },
   statsGrid: {
     flexDirection: 'row',

@@ -50,11 +50,6 @@
           "locationAlwaysAndWhenInUsePermission": "Permitir que Prologix GPS acceda a tu ubicación."
         }
       ]
-    ],
-    "extra": {
-      "eas": {
-        "projectId": "prologix-gps"
-      }
-    }
+    ]
   }
 }

@@ -34,7 +34,7 @@ export default {
     },
     web: {},
     extra: {
-      apiUrl: process.env.EXPO_PUBLIC_API_URL || "http://localhost:3000",
+      apiUrl: "https://prologix-tracking-gps-production.up.railway.app",
       eas: {
         projectId: "prologix-gps"
       }

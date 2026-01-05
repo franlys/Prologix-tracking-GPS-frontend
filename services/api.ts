@@ -30,11 +30,20 @@ const storage = {
 // Read from environment variable (app.config.js)
 // Falls back to localhost for development
 const getBaseUrl = () => {
-  const envUrl = Constants.expoConfig?.extra?.apiUrl;
+  // First check process.env (Expo's EXPO_PUBLIC_* variables)
+  const envUrl = process.env.EXPO_PUBLIC_API_URL;
 
   if (envUrl && envUrl !== 'http://localhost:3000') {
-    // Production URL from environment
+    // Production/Railway URL from environment
+    console.log('✅ Using EXPO_PUBLIC_API_URL from environment:', envUrl);
     return envUrl;
+  }
+
+  // Fallback to Constants.expoConfig.extra
+  const configUrl = Constants.expoConfig?.extra?.apiUrl;
+  if (configUrl && configUrl !== 'http://localhost:3000') {
+    console.log('✅ Using apiUrl from config:', configUrl);
+    return configUrl;
   }
 
   // Development: Extract IP from Expo's hostUri for physical devices
@@ -44,11 +53,14 @@ const getBaseUrl = () => {
     // hostUri looks like: "192.168.1.100:8081"
     // We extract the IP and use port 3000 for backend
     const host = hostUri.split(':')[0];
+    console.log('📱 Using local network IP for development:', `http://${host}:3000`);
     return `http://${host}:3000`;
   }
 
   // Fallback: Use 10.0.2.2 for Android Emulator, localhost for iOS Simulator
-  return Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+  const fallbackUrl = Platform.OS === 'android' ? 'http://10.0.2.2:3000' : 'http://localhost:3000';
+  console.log('⚠️ Using fallback URL:', fallbackUrl);
+  return fallbackUrl;
 };
 
 const BASE_URL = getBaseUrl();
