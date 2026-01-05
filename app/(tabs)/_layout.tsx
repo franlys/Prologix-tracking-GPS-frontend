@@ -2,11 +2,13 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '../../context/ctx';
 import { Redirect } from 'expo-router';
-import { Text } from 'react-native';
+import { Text, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Colors } from '../../constants/Theme';
 
 export default function TabLayout() {
     const { session, isLoading } = useSession();
+    const insets = useSafeAreaInsets();
 
     if (isLoading) {
         return <Text>Loading...</Text>;
@@ -27,8 +29,8 @@ export default function TabLayout() {
                     borderTopColor: Colors.light.border,
                     borderTopWidth: 1,
                     paddingTop: 4,
-                    paddingBottom: 4,
-                    height: 60,
+                    paddingBottom: Platform.OS === 'android' ? insets.bottom + 4 : 4,
+                    height: Platform.OS === 'android' ? 60 + insets.bottom : 60,
                 },
                 tabBarLabelStyle: {
                     fontSize: 11,

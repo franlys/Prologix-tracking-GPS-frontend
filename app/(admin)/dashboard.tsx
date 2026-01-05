@@ -69,7 +69,7 @@ const ADMIN_ACTIONS: QuickAction[] = [
     title: 'Todos los GPS',
     icon: 'map-outline',
     description: 'Ver todos los dispositivos del sistema',
-    route: '/(tabs)/devices',
+    route: '/(admin)/all-devices',
     bgColor: '#06b6d4',
     iconColor: '#ffffff',
   },
