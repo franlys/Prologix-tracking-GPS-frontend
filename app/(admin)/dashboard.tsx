@@ -1,10 +1,12 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, RefreshControl } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSession } from '../../context/ctx';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
+import api from '../../services/api';
 
 interface QuickAction {
   id: string;
@@ -76,6 +78,39 @@ const ADMIN_ACTIONS: QuickAction[] = [
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, signOut } = useSession();
+  const [stats, setStats] = useState({ gpsCount: 0, usersCount: 0, installersCount: 0 });
+  const [refreshing, setRefreshing] = useState(false);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      const [gpsRes, usersRes, installersRes] = await Promise.all([
+        api.get('/admin/devices').catch(() => ({ data: [] })),
+        api.get('/admin/users').catch(() => ({ data: [] })),
+        api.get('/installers').catch(() => ({ data: [] })),
+      ]);
+
+      const users = usersRes.data || [];
+      const actualUsers = users.filter((u: any) => u.role === 'USER');
+
+      setStats({
+        gpsCount: gpsRes.data?.length || 0,
+        usersCount: actualUsers.length,
+        installersCount: installersRes.data?.length || 0,
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchStats();
+    setRefreshing(false);
+  };
 
   const handleLogout = () => {
     signOut();
@@ -99,14 +134,20 @@ export default function AdminDashboard() {
         </View>
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.content}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
         {/* Stats Overview */}
         <View style={styles.statsContainer}>
           <Card variant="elevated" style={styles.statCard}>
             <View style={[styles.statIcon, { backgroundColor: '#eff6ff' }]}>
               <Ionicons name="hardware-chip-outline" size={24} color="#3b82f6" />
             </View>
-            <Text style={styles.statValue}>--</Text>
+            <Text style={styles.statValue}>{stats.gpsCount}</Text>
             <Text style={styles.statLabel}>GPS Activos</Text>
           </Card>
 
@@ -114,7 +155,7 @@ export default function AdminDashboard() {
             <View style={[styles.statIcon, { backgroundColor: '#f0fdf4' }]}>
               <Ionicons name="people-outline" size={24} color="#10b981" />
             </View>
-            <Text style={styles.statValue}>--</Text>
+            <Text style={styles.statValue}>{stats.usersCount}</Text>
             <Text style={styles.statLabel}>Usuarios</Text>
           </Card>
 
@@ -122,7 +163,7 @@ export default function AdminDashboard() {
             <View style={[styles.statIcon, { backgroundColor: '#fef3c7' }]}>
               <Ionicons name="construct-outline" size={24} color="#f59e0b" />
             </View>
-            <Text style={styles.statValue}>--</Text>
+            <Text style={styles.statValue}>{stats.installersCount}</Text>
             <Text style={styles.statLabel}>Instaladores</Text>
           </Card>
         </View>

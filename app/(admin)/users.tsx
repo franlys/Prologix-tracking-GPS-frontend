@@ -82,8 +82,10 @@ export default function AdminUsersScreen() {
   };
 
   const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    // Only show users with role USER (exclude ADMIN and INSTALLER)
+    user.role === 'USER' &&
+    (user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   return (

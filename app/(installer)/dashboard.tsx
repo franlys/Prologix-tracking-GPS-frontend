@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useSession } from '../../context/ctx';
 import api from '../../services/api';
 import { Colors, Spacing, BorderRadius, Typography } from '../../constants/Theme';
@@ -149,10 +150,23 @@ export default function InstallerDashboardScreen() {
         end={{ x: 1, y: 1 }}
         style={styles.header}
       >
-        <Text style={styles.headerTitle}>Panel de Instalador</Text>
-        <Text style={styles.headerSubtitle}>
-          Tus comisiones y clientes
-        </Text>
+        <View style={styles.headerContent}>
+          <View style={styles.headerTextContainer}>
+            <Text style={styles.headerTitle}>Panel de Instalador</Text>
+            <Text style={styles.headerSubtitle}>
+              Tus comisiones y clientes
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              signOut();
+              router.replace('/(auth)/login');
+            }}
+            style={styles.logoutButton}
+          >
+            <Ionicons name="log-out-outline" size={24} color="#ffffff" />
+          </TouchableOpacity>
+        </View>
       </LinearGradient>
 
       <ScrollView
@@ -323,6 +337,14 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'web' ? Spacing.xl : Spacing.xxxl,
     paddingBottom: Spacing.lg,
   },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  headerTextContainer: {
+    flex: 1,
+  },
   headerTitle: {
     fontSize: Typography.fontSize.xxxl,
     fontWeight: Typography.fontWeight.bold,
@@ -332,6 +354,11 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: Typography.fontSize.base,
     color: 'rgba(255, 255, 255, 0.9)',
+  },
+  logoutButton: {
+    padding: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
   },
   content: {
     flex: 1,
