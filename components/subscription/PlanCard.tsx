@@ -84,15 +84,14 @@ export const PlanCard: React.FC<PlanCardProps> = ({ plan, currentPlan, onSelect 
             </Text>
           </View>
 
-          {plan.maxSharedUsers && plan.maxSharedUsers > 0 && (
+          {plan.maxSharedUsers && plan.maxSharedUsers > 0 ? (
             <View style={styles.limitRow}>
               <Text style={styles.limitIcon}>👥</Text>
               <Text style={styles.limitText}>
-                Hasta {plan.maxSharedUsers} usuario{plan.maxSharedUsers > 1 ? 's' : ''} compartido
-                {plan.maxSharedUsers > 1 ? 's' : ''}
+                Hasta {plan.maxSharedUsers} usuario{plan.maxSharedUsers > 1 ? 's' : ''} compartido{plan.maxSharedUsers > 1 ? 's' : ''}
               </Text>
             </View>
-          )}
+          ) : null}
         </View>
 
         <View style={styles.divider} />
