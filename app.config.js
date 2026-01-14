@@ -36,7 +36,7 @@ export default {
     extra: {
       apiUrl: "https://prologix-tracking-gps-production.up.railway.app",
       eas: {
-        projectId: "prologix-gps"
+        projectId: "6b86e30f-222c-4cdd-8c3e-c734cfd3e23a"
       }
     },
     plugins: [
