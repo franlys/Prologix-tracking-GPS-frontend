@@ -34,17 +34,41 @@ export default function MapScreen() {
   const fetchDevices = async () => {
     try {
       const response = await api.get('/devices');
-      const mappedDevices = response.data.map((d: any) => ({
-        id: d.id,
-        name: d.name,
-        lat: parseFloat(d.lastPosition?.lat || 0),
-        lng: parseFloat(d.lastPosition?.lng || 0),
-        status: d.online ? 'online' : 'offline'
-      })).filter((d: any) => d.lat !== 0 && d.lng !== 0);
+
+      if (!response.data || !Array.isArray(response.data)) {
+        console.warn("No devices data received");
+        setDevices([]);
+        return;
+      }
+
+      const mappedDevices = response.data
+        .filter((d: any) => d && d.lastPosition && d.lastPosition.lat && d.lastPosition.lng)
+        .map((d: any) => {
+          const lat = parseFloat(d.lastPosition.lat);
+          const lng = parseFloat(d.lastPosition.lng);
+
+          // Skip devices with invalid coordinates
+          if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) {
+            return null;
+          }
+
+          return {
+            id: d.id,
+            name: d.name || 'Dispositivo sin nombre',
+            lat,
+            lng,
+            status: d.online ? 'online' : 'offline'
+          };
+        })
+        .filter((d: any) => d !== null);
 
       setDevices(mappedDevices);
     } catch (error) {
       console.error("Error fetching devices:", error);
+      // Don't crash - just keep existing devices or empty array
+      if (devices.length === 0) {
+        setDevices([]);
+      }
     }
   };
 
