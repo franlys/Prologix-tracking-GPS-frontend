@@ -20,9 +20,14 @@ export default function DevicesScreen() {
     const fetchDevices = async () => {
         try {
             const response = await api.get('/devices');
-            setDevices(response.data);
+            if (response.data && Array.isArray(response.data)) {
+                setDevices(response.data);
+            } else {
+                setDevices([]);
+            }
         } catch (error) {
-            console.error(error);
+            console.error('Error fetching devices:', error);
+            setDevices([]);
         }
     };
 
@@ -146,7 +151,7 @@ export default function DevicesScreen() {
                                     </View>
                                 </View>
 
-                                {item.lastPosition && (
+                                {item.lastPosition && item.lastPosition.lat && item.lastPosition.lng && (
                                     <View style={styles.cardDetails}>
                                         <View style={styles.detailRow}>
                                             <View style={styles.detailItem}>
@@ -155,7 +160,7 @@ export default function DevicesScreen() {
                                                     <Text style={styles.detailLabel}>Ubicación</Text>
                                                     <Text style={styles.detailValue}>
                                                         {item.lastPosition.address ||
-                                                            `${parseFloat(item.lastPosition.lat).toFixed(4)}°, ${parseFloat(item.lastPosition.lng).toFixed(4)}°`}
+                                                            `${parseFloat(item.lastPosition.lat || 0).toFixed(4)}°, ${parseFloat(item.lastPosition.lng || 0).toFixed(4)}°`}
                                                     </Text>
                                                 </View>
                                             </View>
@@ -177,10 +182,12 @@ export default function DevicesScreen() {
                                                 <View style={styles.detailContent}>
                                                     <Text style={styles.detailLabel}>Actualizado</Text>
                                                     <Text style={styles.detailValue}>
-                                                        {new Date(item.lastPosition.timestamp).toLocaleTimeString('es-ES', {
-                                                            hour: '2-digit',
-                                                            minute: '2-digit'
-                                                        })}
+                                                        {item.lastPosition.timestamp
+                                                            ? new Date(item.lastPosition.timestamp).toLocaleTimeString('es-ES', {
+                                                                hour: '2-digit',
+                                                                minute: '2-digit'
+                                                              })
+                                                            : '--:--'}
                                                     </Text>
                                                 </View>
                                             </View>
