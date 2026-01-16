@@ -24,7 +24,7 @@
         "backgroundColor": "#1e3a8a"
       },
       "package": "com.prologix.gps",
-      "versionCode": 4,
+      "versionCode": 5,
       "edgeToEdgeEnabled": true,
       "permissions": [
         "ACCESS_FINE_LOCATION",
