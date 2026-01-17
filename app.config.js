@@ -2,7 +2,7 @@ export default {
   expo: {
     name: "Prologix GPS",
     slug: "prologix-gps",
-    version: "1.0.7",
+    version: "1.0.8",
     orientation: "portrait",
     userInterfaceStyle: "light",
     splash: {
@@ -23,7 +23,7 @@ export default {
     },
     android: {
       package: "com.prologix.gps",
-      versionCode: 7,
+      versionCode: 8,
       permissions: [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"

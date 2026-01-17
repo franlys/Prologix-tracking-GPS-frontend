@@ -1,25 +1,70 @@
-import { StyleSheet, View, Text, Platform, Linking, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Platform, Linking, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native';
+import { useState, useEffect, Component, ErrorInfo, ReactNode } from 'react';
 import api from '../../services/api';
+
+// Error Boundary to catch crashes and display error info
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: ErrorInfo | null;
+}
+
+class MapErrorBoundary extends Component<{children: ReactNode}, ErrorBoundaryState> {
+  constructor(props: {children: ReactNode}) {
+    super(props);
+    this.state = { hasError: false, error: null, errorInfo: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    this.setState({ error, errorInfo });
+    console.error('MapErrorBoundary caught error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <ScrollView style={{ flex: 1, padding: 20, backgroundColor: '#fee2e2' }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#dc2626', marginBottom: 10 }}>
+            Error en el Mapa
+          </Text>
+          <Text style={{ fontSize: 14, color: '#7f1d1d', marginBottom: 10 }}>
+            {this.state.error?.toString()}
+          </Text>
+          <Text style={{ fontSize: 12, color: '#991b1b', fontFamily: 'monospace' }}>
+            {this.state.errorInfo?.componentStack}
+          </Text>
+        </ScrollView>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // Lazy load MapView to prevent crashes
 let MapView: any = null;
 let Marker: any = null;
+let mapLoadError: string | null = null;
 
 if (Platform.OS !== 'web') {
   try {
     const maps = require('react-native-maps');
     MapView = maps.default;
     Marker = maps.Marker;
-  } catch (e) {
+  } catch (e: any) {
+    mapLoadError = e?.message || 'Failed to load react-native-maps';
     console.error('Failed to load react-native-maps:', e);
   }
 }
 
 export default function MapScreen() {
   const [devices, setDevices] = useState<any[]>([]);
-  const [mapError, setMapError] = useState<string | null>(null);
+  const [mapError, setMapError] = useState<string | null>(mapLoadError);
   const [isLoading, setIsLoading] = useState(true);
+  const [debugInfo, setDebugInfo] = useState<string>('');
 
   const openNavigation = (lat: number, lng: number, name: string) => {
     const url = Platform.select({
@@ -202,38 +247,48 @@ export default function MapScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 18.7357,
-          longitude: -70.1627,
-          latitudeDelta: 2.5,
-          longitudeDelta: 2.5,
-        }}
-        showsUserLocation={true}
-        onMapReady={() => console.log('Map ready')}
-        onError={(e: any) => {
-          console.error('MapView error:', e);
-          setMapError('Error al cargar el mapa');
-        }}
-      >
-        {devices.map((device: any) => (
-            <Marker
-                key={device.id}
-                coordinate={{ latitude: device.lat, longitude: device.lng }}
-                title={device.name}
-                description={`Status: ${device.status}`}
-                pinColor={device.status === 'online' ? 'green' : 'gray'}
-            />
-        ))}
-      </MapView>
-      {mapError && (
-        <View style={styles.mapErrorOverlay}>
-          <Text style={styles.mapErrorText}>{mapError}</Text>
-        </View>
-      )}
-    </View>
+    <MapErrorBoundary>
+      <View style={styles.container}>
+        {debugInfo ? (
+          <View style={styles.debugOverlay}>
+            <Text style={styles.debugText}>{debugInfo}</Text>
+          </View>
+        ) : null}
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: 18.7357,
+            longitude: -70.1627,
+            latitudeDelta: 2.5,
+            longitudeDelta: 2.5,
+          }}
+          showsUserLocation={true}
+          onMapReady={() => {
+            console.log('Map ready');
+            setDebugInfo('Mapa cargado correctamente');
+          }}
+          onError={(e: any) => {
+            console.error('MapView error:', e);
+            setMapError('Error al cargar el mapa: ' + JSON.stringify(e));
+          }}
+        >
+          {devices.map((device: any) => (
+              <Marker
+                  key={device.id}
+                  coordinate={{ latitude: device.lat, longitude: device.lng }}
+                  title={device.name}
+                  description={`Status: ${device.status}`}
+                  pinColor={device.status === 'online' ? 'green' : 'gray'}
+              />
+          ))}
+        </MapView>
+        {mapError && (
+          <View style={styles.mapErrorOverlay}>
+            <Text style={styles.mapErrorText}>{mapError}</Text>
+          </View>
+        )}
+      </View>
+    </MapErrorBoundary>
   );
 }
 
@@ -293,6 +348,21 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         fontWeight: '500',
+    },
+    debugOverlay: {
+        position: 'absolute',
+        top: 10,
+        left: 10,
+        right: 10,
+        backgroundColor: 'rgba(34, 197, 94, 0.9)',
+        padding: 8,
+        borderRadius: 6,
+        zIndex: 1000,
+    },
+    debugText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 12,
     },
     webContent: {
         flex: 1,
