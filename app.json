@@ -2,7 +2,7 @@
   "expo": {
     "name": "Prologix GPS",
     "slug": "prologix-gps",
-    "version": "1.0.0",
+    "version": "1.0.6",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -24,7 +24,7 @@
         "backgroundColor": "#1e3a8a"
       },
       "package": "com.prologix.gps",
-      "versionCode": 5,
+      "versionCode": 6,
       "edgeToEdgeEnabled": true,
       "permissions": [
         "ACCESS_FINE_LOCATION",

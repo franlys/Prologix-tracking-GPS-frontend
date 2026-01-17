@@ -1,10 +1,25 @@
-import { StyleSheet, View, Text, Platform, Linking, TouchableOpacity } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import { StyleSheet, View, Text, Platform, Linking, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useState, useEffect } from 'react';
 import api from '../../services/api';
 
+// Lazy load MapView to prevent crashes
+let MapView: any = null;
+let Marker: any = null;
+
+if (Platform.OS !== 'web') {
+  try {
+    const maps = require('react-native-maps');
+    MapView = maps.default;
+    Marker = maps.Marker;
+  } catch (e) {
+    console.error('Failed to load react-native-maps:', e);
+  }
+}
+
 export default function MapScreen() {
   const [devices, setDevices] = useState<any[]>([]);
+  const [mapError, setMapError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const openNavigation = (lat: number, lng: number, name: string) => {
     const url = Platform.select({
@@ -14,7 +29,7 @@ export default function MapScreen() {
     });
 
     if (url) {
-      Linking.openURL(url).catch(err => {
+      Linking.openURL(url).catch(() => {
         // Fallback to Google Maps on web
         Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${lat},${lng}`);
       });
@@ -33,11 +48,13 @@ export default function MapScreen() {
 
   const fetchDevices = async () => {
     try {
+      setIsLoading(true);
       const response = await api.get('/devices');
 
       if (!response.data || !Array.isArray(response.data)) {
         console.warn("No devices data received");
         setDevices([]);
+        setIsLoading(false);
         return;
       }
 
@@ -69,6 +86,8 @@ export default function MapScreen() {
       if (devices.length === 0) {
         setDevices([]);
       }
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -161,7 +180,27 @@ export default function MapScreen() {
     );
   }
 
-  // Native version
+  // Native version - show error if MapView failed to load
+  if (!MapView) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorIcon}>🗺️</Text>
+        <Text style={styles.errorTitle}>Mapa no disponible</Text>
+        <Text style={styles.errorText}>No se pudo cargar el componente del mapa</Text>
+      </View>
+    );
+  }
+
+  // Show loading state
+  if (isLoading && devices.length === 0) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#3b82f6" />
+        <Text style={styles.loadingText}>Cargando mapa...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <MapView
@@ -173,6 +212,11 @@ export default function MapScreen() {
           longitudeDelta: 2.5,
         }}
         showsUserLocation={true}
+        onMapReady={() => console.log('Map ready')}
+        onError={(e: any) => {
+          console.error('MapView error:', e);
+          setMapError('Error al cargar el mapa');
+        }}
       >
         {devices.map((device: any) => (
             <Marker
@@ -184,6 +228,11 @@ export default function MapScreen() {
             />
         ))}
       </MapView>
+      {mapError && (
+        <View style={styles.mapErrorOverlay}>
+          <Text style={styles.mapErrorText}>{mapError}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -197,6 +246,53 @@ const styles = StyleSheet.create({
     map: {
         width: '100%',
         height: '100%',
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8fafc',
+        padding: 20,
+    },
+    errorIcon: {
+        fontSize: 64,
+        marginBottom: 16,
+    },
+    errorTitle: {
+        fontSize: 20,
+        fontWeight: '600',
+        color: '#1e293b',
+        marginBottom: 8,
+    },
+    errorText: {
+        fontSize: 14,
+        color: '#64748b',
+        textAlign: 'center',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#f8fafc',
+    },
+    loadingText: {
+        marginTop: 12,
+        fontSize: 16,
+        color: '#64748b',
+    },
+    mapErrorOverlay: {
+        position: 'absolute',
+        bottom: 20,
+        left: 20,
+        right: 20,
+        backgroundColor: 'rgba(239, 68, 68, 0.9)',
+        padding: 12,
+        borderRadius: 8,
+    },
+    mapErrorText: {
+        color: 'white',
+        textAlign: 'center',
+        fontWeight: '500',
     },
     webContent: {
         flex: 1,

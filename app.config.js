@@ -2,7 +2,7 @@ export default {
   expo: {
     name: "Prologix GPS",
     slug: "prologix-gps",
-    version: "1.0.0",
+    version: "1.0.7",
     orientation: "portrait",
     userInterfaceStyle: "light",
     splash: {
@@ -15,6 +15,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.prologix.gps",
+      buildNumber: "6",
       infoPlist: {
         NSLocationWhenInUseUsageDescription: "Prologix GPS needs your location to show your position on the map.",
         NSLocationAlwaysUsageDescription: "Prologix GPS needs your location to track your devices."
@@ -22,6 +23,7 @@ export default {
     },
     android: {
       package: "com.prologix.gps",
+      versionCode: 7,
       permissions: [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
