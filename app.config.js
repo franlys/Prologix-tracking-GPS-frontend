@@ -2,7 +2,7 @@ export default {
   expo: {
     name: "Prologix GPS",
     slug: "prologix-gps",
-    version: "1.0.9",
+    version: "1.0.10",
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
@@ -29,7 +29,7 @@ export default {
         backgroundColor: "#1e3a8a"
       },
       package: "com.prologix.gps",
-      versionCode: 9,
+      versionCode: 10,
       permissions: [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
