@@ -2,10 +2,12 @@ export default {
   expo: {
     name: "Prologix GPS",
     slug: "prologix-gps",
-    version: "1.0.8",
+    version: "1.0.9",
     orientation: "portrait",
+    icon: "./assets/icon.png",
     userInterfaceStyle: "light",
     splash: {
+      image: "./assets/splash-icon.png",
       backgroundColor: "#2196F3",
       resizeMode: "contain"
     },
@@ -22,8 +24,12 @@ export default {
       }
     },
     android: {
+      adaptiveIcon: {
+        foregroundImage: "./assets/adaptive-icon.png",
+        backgroundColor: "#1e3a8a"
+      },
       package: "com.prologix.gps",
-      versionCode: 8,
+      versionCode: 9,
       permissions: [
         "ACCESS_FINE_LOCATION",
         "ACCESS_COARSE_LOCATION"
