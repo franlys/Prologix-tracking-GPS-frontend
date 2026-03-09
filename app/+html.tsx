@@ -19,26 +19,26 @@ export default function Root({ children }: PropsWithChildren) {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Prologix GPS" />
-        <link rel="apple-touch-icon" href="/assets/icon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/assets/icon.png" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/assets/icon.png" />
+        <link rel="apple-touch-icon" href="icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="icon-152.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="icon-120.png" />
 
         {/* iOS Splash Screens */}
         <meta name="apple-touch-fullscreen" content="yes" />
-        <link rel="apple-touch-startup-image" href="/assets/splash-icon.png" />
+        <link rel="apple-touch-startup-image" href="splash-icon.png" />
 
         {/* Android/Chrome */}
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
 
         {/* Favicon */}
-        <link rel="icon" type="image/png" href="/assets/icon.png" />
-        <link rel="shortcut icon" href="/assets/icon.png" />
+        <link rel="icon" type="image/png" href="favicon.png" />
+        <link rel="shortcut icon" href="favicon.png" />
 
         {/* Microsoft */}
         <meta name="msapplication-TileColor" content="#1e3a8a" />
-        <meta name="msapplication-TileImage" content="/assets/icon.png" />
+        <meta name="msapplication-TileImage" content="icon.png" />
 
         {/* Open Graph / Social */}
         <meta property="og:type" content="website" />

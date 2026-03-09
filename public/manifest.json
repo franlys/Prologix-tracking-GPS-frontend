@@ -1,7 +1,7 @@
 {
   "name": "Prologix GPS",
   "short_name": "Prologix",
-  "description": "Sistema de rastreo GPS en tiempo real para vehículos",
+  "description": "Sistema de rastreo GPS en tiempo real para vehiculos",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -12,25 +12,43 @@
   "categories": ["utilities", "navigation"],
   "icons": [
     {
-      "src": "/assets/icon.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/icon.png",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/assets/icon.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/assets/adaptive-icon.png",
+      "src": "icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-120.png",
+      "sizes": "120x120",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "adaptive-icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
