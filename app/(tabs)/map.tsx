@@ -60,8 +60,49 @@ if (Platform.OS !== 'web') {
   }
 }
 
+// Helper function to validate and sanitize device data
+function sanitizeDevice(d: any): any | null {
+  try {
+    if (!d) return null;
+    if (typeof d !== 'object') return null;
+
+    // Get coordinates from lastPosition
+    const pos = d.lastPosition;
+    if (!pos) return null;
+    if (typeof pos !== 'object') return null;
+
+    // Check that lat and lng exist before parsing
+    if (pos.lat === undefined || pos.lat === null) return null;
+    if (pos.lng === undefined || pos.lng === null) return null;
+
+    // Parse and validate coordinates
+    const lat = typeof pos.lat === 'number' ? pos.lat : parseFloat(String(pos.lat));
+    const lng = typeof pos.lng === 'number' ? pos.lng : parseFloat(String(pos.lng));
+
+    // Strict validation
+    if (typeof lat !== 'number' || typeof lng !== 'number') return null;
+    if (isNaN(lat) || isNaN(lng)) return null;
+    if (!isFinite(lat) || !isFinite(lng)) return null;
+    if (lat === 0 && lng === 0) return null;
+    if (lat < -90 || lat > 90) return null;
+    if (lng < -180 || lng > 180) return null;
+
+    return {
+      id: String(d.id || Math.random()),
+      name: String(d.name || 'Dispositivo sin nombre'),
+      lat: lat,
+      lng: lng,
+      status: d.online === true ? 'online' : 'offline'
+    };
+  } catch (e) {
+    console.error('Error sanitizing device:', e, d);
+    return null;
+  }
+}
+
 export default function MapScreen() {
   const [devices, setDevices] = useState<any[]>([]);
+  const [validMarkers, setValidMarkers] = useState<any[]>([]);
   const [mapError, setMapError] = useState<string | null>(mapLoadError);
   const [isLoading, setIsLoading] = useState(true);
   const [debugInfo, setDebugInfo] = useState<string>('');
@@ -99,37 +140,31 @@ export default function MapScreen() {
       if (!response.data || !Array.isArray(response.data)) {
         console.warn("No devices data received");
         setDevices([]);
+        setValidMarkers([]);
         setIsLoading(false);
         return;
       }
 
-      const mappedDevices = response.data
-        .filter((d: any) => d && d.lastPosition && d.lastPosition.lat && d.lastPosition.lng)
-        .map((d: any) => {
-          const lat = parseFloat(d.lastPosition.lat);
-          const lng = parseFloat(d.lastPosition.lng);
+      // Store raw devices for display
+      setDevices(response.data);
 
-          // Skip devices with invalid coordinates
-          if (isNaN(lat) || isNaN(lng) || (lat === 0 && lng === 0)) {
-            return null;
-          }
+      // Sanitize devices for map markers - use the helper function
+      const markers: any[] = [];
+      for (const d of response.data) {
+        const sanitized = sanitizeDevice(d);
+        if (sanitized) {
+          markers.push(sanitized);
+        }
+      }
 
-          return {
-            id: d.id,
-            name: d.name || 'Dispositivo sin nombre',
-            lat,
-            lng,
-            status: d.online ? 'online' : 'offline'
-          };
-        })
-        .filter((d: any) => d !== null);
-
-      setDevices(mappedDevices);
+      console.log(`Sanitized ${markers.length} valid markers from ${response.data.length} devices`);
+      setValidMarkers(markers);
     } catch (error) {
       console.error("Error fetching devices:", error);
       // Don't crash - just keep existing devices or empty array
       if (devices.length === 0) {
         setDevices([]);
+        setValidMarkers([]);
       }
     } finally {
       setIsLoading(false);
@@ -256,6 +291,7 @@ export default function MapScreen() {
         ) : null}
         <MapView
           style={styles.map}
+          provider={null}
           initialRegion={{
             latitude: 18.7357,
             longitude: -70.1627,
@@ -272,14 +308,14 @@ export default function MapScreen() {
             setMapError('Error al cargar el mapa: ' + JSON.stringify(e));
           }}
         >
-          {devices.map((device: any) => (
-              <Marker
-                  key={device.id}
-                  coordinate={{ latitude: device.lat, longitude: device.lng }}
-                  title={device.name}
-                  description={`Status: ${device.status}`}
-                  pinColor={device.status === 'online' ? 'green' : 'gray'}
-              />
+          {validMarkers.length > 0 && validMarkers.map((marker) => (
+            <Marker
+              key={marker.id}
+              coordinate={{ latitude: marker.lat, longitude: marker.lng }}
+              title={marker.name}
+              description={`Status: ${marker.status}`}
+              pinColor={marker.status === 'online' ? 'green' : 'gray'}
+            />
           ))}
         </MapView>
         {mapError && (

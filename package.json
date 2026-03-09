@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "1.0.0",
   "main": "expo-router/entry",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -40,6 +43,7 @@
   "devDependencies": {
     "@types/leaflet": "^1.9.21",
     "@types/react": "~19.1.10",
+    "sharp": "^0.34.5",
     "typescript": "~5.9.2"
   }
 }

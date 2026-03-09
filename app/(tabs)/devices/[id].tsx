@@ -147,6 +147,17 @@ export default function DeviceMapScreen() {
         return <View style={styles.container}><Text>Cargando...</Text></View>;
     }
 
+    // Check if device has valid coordinates
+    const hasValidCoordinates = device.lat !== undefined &&
+                                device.lat !== null &&
+                                device.lng !== undefined &&
+                                device.lng !== null &&
+                                !isNaN(parseFloat(device.lat)) &&
+                                !isNaN(parseFloat(device.lng));
+
+    const deviceLat = hasValidCoordinates ? parseFloat(device.lat) : 18.4861;
+    const deviceLng = hasValidCoordinates ? parseFloat(device.lng) : -69.9312;
+
     // Web version
     if (Platform.OS === 'web') {
         return (
@@ -180,10 +191,12 @@ export default function DeviceMapScreen() {
                         <View style={styles.cardContent}>
                             <Text style={styles.infoLabel}>Posición Actual</Text>
                             <Text style={styles.infoValue}>
-                                {parseFloat(device.lat || 0).toFixed(6)}, {parseFloat(device.lng || 0).toFixed(6)}
+                                {hasValidCoordinates
+                                    ? `${deviceLat.toFixed(6)}, ${deviceLng.toFixed(6)}`
+                                    : 'Sin ubicación disponible'}
                             </Text>
                             <Text style={styles.infoSubtext}>
-                                Lat/Lng
+                                {hasValidCoordinates ? 'Lat/Lng' : 'GPS apagado o sin señal'}
                             </Text>
                         </View>
                     </View>
@@ -348,8 +361,8 @@ export default function DeviceMapScreen() {
                 ref={mapRef}
                 style={styles.map}
                 initialRegion={{
-                    latitude: parseFloat(device.lat || 18.4861),
-                    longitude: parseFloat(device.lng || -69.9312),
+                    latitude: deviceLat,
+                    longitude: deviceLng,
                     latitudeDelta: 0.01,
                     longitudeDelta: 0.01,
                 }}
@@ -364,20 +377,28 @@ export default function DeviceMapScreen() {
                         strokeWidth={3}
                     />
                 )}
-                <Marker
-                    coordinate={{ latitude: parseFloat(device.lat), longitude: parseFloat(device.lng) }}
-                    title="Current Position"
-                    description={`Speed: ${device.speed} km/h`}
-                    pinColor="blue"
-                />
-                {history.length > 0 && history[0] && (
+                {hasValidCoordinates && (
+                    <Marker
+                        coordinate={{ latitude: deviceLat, longitude: deviceLng }}
+                        title={hasValidCoordinates ? "Posición Actual" : "Sin ubicación"}
+                        description={hasValidCoordinates ? `Velocidad: ${device.speed || 0} km/h` : "GPS apagado o sin señal"}
+                        pinColor="blue"
+                    />
+                )}
+                {history.length > 0 && history[0] && !isNaN(history[0].lat) && !isNaN(history[0].lng) && (
                     <Marker
                         coordinate={{ latitude: history[0].lat, longitude: history[0].lng }}
-                        title="Starting Point"
+                        title="Punto de Inicio"
                         pinColor="green"
                     />
                 )}
             </MapView>
+            {!hasValidCoordinates && (
+                <View style={styles.noLocationOverlay}>
+                    <Text style={styles.noLocationText}>📍 Sin ubicación disponible</Text>
+                    <Text style={styles.noLocationSubtext}>El GPS está apagado o sin señal</Text>
+                </View>
+            )}
         </View>
     );
 }
@@ -671,5 +692,30 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '700',
         color: '#1e293b',
+    },
+    noLocationOverlay: {
+        position: 'absolute',
+        top: 20,
+        left: 20,
+        right: 20,
+        backgroundColor: 'rgba(251, 191, 36, 0.95)',
+        padding: 16,
+        borderRadius: 12,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+        elevation: 4,
+    },
+    noLocationText: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#78350f',
+        marginBottom: 4,
+    },
+    noLocationSubtext: {
+        fontSize: 13,
+        color: '#92400e',
     },
 });

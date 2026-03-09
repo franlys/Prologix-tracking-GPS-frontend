@@ -22,7 +22,8 @@
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://prologix-tracking-gps-production.up.railway.app"
+        "EXPO_PUBLIC_API_URL": "https://prologix-tracking-gps-production.up.railway.app",
+        "GOOGLE_MAPS_API_KEY": "AIzaSyCLDdPsRnJ0TelOYiBO8lWwS0wIQdNYiII"
       },
       "android": {
         "buildType": "app-bundle",
