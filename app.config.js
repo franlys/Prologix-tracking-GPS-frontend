@@ -40,7 +40,21 @@ export default {
         }
       }
     },
-    web: {},
+    web: {
+      favicon: "./assets/icon.png",
+      bundler: "metro",
+      output: "single",
+      name: "Prologix GPS",
+      shortName: "Prologix",
+      description: "Sistema de rastreo GPS en tiempo real para vehículos",
+      lang: "es",
+      themeColor: "#1e3a8a",
+      backgroundColor: "#1e3a8a",
+      display: "standalone",
+      orientation: "portrait",
+      startUrl: "/",
+      scope: "/"
+    },
     extra: {
       apiUrl: "https://prologix-tracking-gps-production.up.railway.app",
       eas: {
