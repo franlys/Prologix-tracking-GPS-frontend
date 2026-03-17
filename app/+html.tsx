@@ -19,17 +19,17 @@ export default function Root({ children }: PropsWithChildren) {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Prologix GPS" />
-        <link rel="apple-touch-icon" href="/assets/icon.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/assets/icon.png" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/assets/icon.png" />
-        <link rel="apple-touch-icon" sizes="120x120" href="/assets/icon.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="152x152" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png" />
 
         {/* iOS Splash Screens */}
         <meta name="apple-touch-fullscreen" content="yes" />
         <link rel="apple-touch-startup-image" href="splash-icon.png" />
 
         {/* Android/Chrome */}
-        <link rel="manifest" href="manifest.json" />
+        <link rel="manifest" href="/manifest.json" />
         <meta name="mobile-web-app-capable" content="yes" />
 
         {/* Favicon */}
